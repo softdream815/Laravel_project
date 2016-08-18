@@ -1,6 +1,7 @@
 <?php
 
 use League\OAuth2\Server\AuthorizationServer;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Laravel\Passport\Bridge\AccessTokenRepository;
 
 class ApproveAuthorizationControllerTest extends PHPUnit_Framework_TestCase

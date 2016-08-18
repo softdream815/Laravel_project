@@ -1,5 +1,6 @@
 <?php
 
+use Laravel\Passport\Passport;
 use Illuminate\Http\Request;
 
 class AuthorizedAccessTokenControllerTest extends PHPUnit_Framework_TestCase

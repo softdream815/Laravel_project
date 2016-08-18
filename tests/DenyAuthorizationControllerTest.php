@@ -1,5 +1,6 @@
 <?php
 
+use League\OAuth2\Server\AuthorizationServer;
 use Illuminate\Contracts\Routing\ResponseFactory;
 
 class DenyAuthorizationControllerTest extends PHPUnit_Framework_TestCase
