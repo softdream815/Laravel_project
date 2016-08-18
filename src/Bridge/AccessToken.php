@@ -14,7 +14,7 @@ class AccessToken implements AccessTokenEntityInterface
     /**
      * Create a new token instance.
      *
-     * @param  string  $userIdentifier
+     * @param  string  $identifier
      * @param  string|int  $userIdentifier
      * @param  array  $scopes
      * @return void
