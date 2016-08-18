@@ -31,6 +31,7 @@ class AuthorizationControllerTest extends PHPUnit_Framework_TestCase
         $authRequest->shouldReceive('getClient->getIdentifier')->andReturn(1);
         $authRequest->shouldReceive('getScopes')->andReturn([new Laravel\Passport\Bridge\Scope('scope-1')]);
 
+
         $response->shouldReceive('view')->once()->andReturnUsing(function ($view, $data) use ($authRequest) {
             $this->assertEquals('passport::authorize', $view);
             $this->assertEquals('client', $data['client']);

@@ -66,7 +66,6 @@ class ClientControllerTest extends PHPUnit_Framework_TestCase
             $user->clients->shouldReceive('find')->with(1)->andReturn(
                 $client = Mockery::mock('Laravel\Passport\Client')
             );
-
             return $user;
         });
 
@@ -102,7 +101,6 @@ class ClientControllerTest extends PHPUnit_Framework_TestCase
             $user->id = 1;
             $user->clients = Mockery::mock();
             $user->clients->shouldReceive('find')->with(1)->andReturn(null);
-
             return $user;
         });
 
@@ -130,7 +128,6 @@ class ClientControllerTest extends PHPUnit_Framework_TestCase
             $user->clients->shouldReceive('find')->with(1)->andReturn(
                 $client = Mockery::mock('Laravel\Passport\Client')
             );
-
             return $user;
         });
 
@@ -158,7 +155,6 @@ class ClientControllerTest extends PHPUnit_Framework_TestCase
             $user->id = 1;
             $user->clients = Mockery::mock();
             $user->clients->shouldReceive('find')->with(1)->andReturn(null);
-
             return $user;
         });
 
