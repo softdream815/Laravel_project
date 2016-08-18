@@ -106,6 +106,21 @@ class ClientRepository
     }
 
     /**
+     * Regenerate the client secret.
+     *
+     * @param  Client $client
+     * @return Client
+     */
+    public function regenerateSecret(Client $client)
+    {
+        $client->forceFill([
+            'secret' => str_random(40),
+        ])->save();
+
+        return $client;
+    }
+
+    /**
      * Determine if the given client is revoked.
      *
      * @param  int  $id
