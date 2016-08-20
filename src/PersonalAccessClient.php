@@ -22,8 +22,6 @@ class PersonalAccessClient extends Model
 
     /**
      * Get all of the authentication codes for the client.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function client()
     {
