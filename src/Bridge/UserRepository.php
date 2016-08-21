@@ -42,7 +42,7 @@ class UserRepository implements UserRepositoryInterface
             $user = (new $model)->where('email', $username)->first();
         }
 
-        if (! $user || ! $this->hasher->check($password, $user->password)) {
+        if (! $this->hasher->check($password, $user->password)) {
             return;
         }
 

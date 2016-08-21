@@ -30,20 +30,7 @@ class Client extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'personal_access_client' => 'bool',
-        'password_client' => 'bool',
-        'revoked' => 'bool',
-    ];
-
-    /**
      * Get all of the authentication codes for the client.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function authCodes()
     {
@@ -52,8 +39,6 @@ class Client extends Model
 
     /**
      * Get all of the tokens that belong to the client.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function tokens()
     {
