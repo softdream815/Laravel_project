@@ -43,7 +43,8 @@ class Token extends Model
      * @var array
      */
     protected $dates = [
-        'expires_at',
+        'last_used_at',
+        'expires_at' ,
     ];
 
     /**
