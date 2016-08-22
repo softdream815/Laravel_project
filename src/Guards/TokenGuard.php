@@ -194,7 +194,7 @@ class TokenGuard
      * Determine if the CSRF / header are valid and match.
      *
      * @param  array  $token
-     * @param  Request  $request
+     * @param  string  $header
      * @return bool
      */
     protected function validCsrf($token, $request)
