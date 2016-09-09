@@ -2,8 +2,8 @@
 
 namespace Laravel\Passport\Console;
 
-use phpseclib\Crypt\RSA;
 use Illuminate\Console\Command;
+use Symfony\Component\Process\Process;
 
 class KeysCommand extends Command
 {
@@ -24,15 +24,16 @@ class KeysCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param  RSA  $rsa
      * @return mixed
      */
-    public function handle(RSA $rsa)
+    public function handle()
     {
-        $keys = $rsa->createKey(4096);
+        $callback = function ($type, $line) {
+            $this->output->write($line);
+        };
 
-        file_put_contents(storage_path('oauth-private.key'), array_get($keys, 'privatekey'));
-        file_put_contents(storage_path('oauth-public.key'), array_get($keys, 'publickey'));
+        (new Process('openssl genrsa -out oauth-private.key 4096', storage_path()))->run($callback);
+        (new Process('openssl rsa -in oauth-private.key -pubout -out oauth-public.key', storage_path()))->run($callback);
 
         $this->info('Encryption keys generated successfully.');
     }
