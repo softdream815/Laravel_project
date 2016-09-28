@@ -3,7 +3,6 @@
 namespace Laravel\Passport\Http\Controllers;
 
 use Exception;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Laravel\Passport\Bridge\User;
 
@@ -22,9 +21,7 @@ trait RetrievesAuthRequestFromSession
                 throw new Exception('Authorization request was not present in the session.');
             }
 
-            $userId = $request->user() instanceof Model ? $request->user()->getKey() : $request->user()->id;
-
-            $authRequest->setUser(new User($userId));
+            $authRequest->setUser(new User($request->user()->id));
 
             $authRequest->setAuthorizationApproved(true);
         });
