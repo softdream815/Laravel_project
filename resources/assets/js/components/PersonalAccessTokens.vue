@@ -33,10 +33,8 @@
                     <!-- Personal Access Tokens -->
                     <table class="table table-borderless m-b-none" v-if="tokens.length > 0">
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th></th>
-                            </tr>
+                            <th>Name</th>
+                            <th></th>
                         </thead>
 
                         <tbody>
@@ -181,7 +179,7 @@
         /**
          * Prepare the component.
          */
-        ready() {
+        mounted() {
             this.getTokens();
             this.getScopes();
 

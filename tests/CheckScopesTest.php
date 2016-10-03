@@ -26,7 +26,7 @@ class CheckScopesTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Illuminate\Auth\Access\AuthorizationException
+     * @expectedException Illuminate\Auth\AuthenticationException
      */
     public function test_exception_is_thrown_if_token_doesnt_have_scope()
     {

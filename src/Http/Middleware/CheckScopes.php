@@ -3,7 +3,6 @@
 namespace Laravel\Passport\Http\Middleware;
 
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Auth\Access\AuthorizationException;
 
 class CheckScopes
 {
@@ -23,7 +22,7 @@ class CheckScopes
 
         foreach ($scopes as $scope) {
             if (! $request->user()->tokenCan($scope)) {
-                throw new AuthorizationException;
+                throw new AuthenticationException;
             }
         }
 

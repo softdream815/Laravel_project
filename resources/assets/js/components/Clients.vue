@@ -31,13 +31,11 @@
 
                 <table class="table table-borderless m-b-none" v-if="clients.length > 0">
                     <thead>
-                        <tr>
-                            <th>Client ID</th>
-                            <th>Name</th>
-                            <th>Secret</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
+                        <th>Client ID</th>
+                        <th>Name</th>
+                        <th>Secret</th>
+                        <th></th>
+                        <th></th>
                     </thead>
 
                     <tbody>
@@ -240,7 +238,7 @@
         /**
          * Prepare the component.
          */
-        ready() {
+        mounted() {
             this.getClients();
 
             $('#modal-create-client').on('shown.bs.modal', () => {
