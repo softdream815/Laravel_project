@@ -16,6 +16,13 @@ class CreateFreshApiToken
     protected $cookieFactory;
 
     /**
+     * The authentication guard.
+     *
+     * @var string
+     */
+    protected $guard;
+
+    /**
      * Create a new middleware instance.
      *
      * @param  ApiTokenCookieFactory  $cookieFactory
@@ -36,6 +43,8 @@ class CreateFreshApiToken
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        $this->guard = $guard;
+
         $response = $next($request);
 
         if ($this->shouldReceiveFreshToken($request, $response)) {
@@ -68,7 +77,7 @@ class CreateFreshApiToken
      */
     protected function requestShouldReceiveFreshToken($request)
     {
-        return $request->isMethod('GET') && $request->user();
+        return $request->isMethod('GET') && $request->user($this->guard);
     }
 
     /**
