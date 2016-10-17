@@ -6,9 +6,8 @@ use Exception;
 use Firebase\JWT\JWT;
 use Laravel\Passport\Token;
 use Illuminate\Http\Request;
-use Laravel\Passport\Passport;
-use Illuminate\Container\Container;
 use Laravel\Passport\TransientToken;
+use Illuminate\Container\Container;
 use Laravel\Passport\TokenRepository;
 use Laravel\Passport\ClientRepository;
 use League\OAuth2\Server\ResourceServer;
@@ -88,7 +87,7 @@ class TokenGuard
     {
         if ($request->bearerToken()) {
             return $this->authenticateViaBearerToken($request);
-        } elseif ($request->cookie(Passport::cookie())) {
+        } elseif ($request->cookie('laravel_token')) {
             return $this->authenticateViaCookie($request);
         }
     }
@@ -186,7 +185,7 @@ class TokenGuard
     protected function decodeJwtTokenCookie($request)
     {
         return (array) JWT::decode(
-            $this->encrypter->decrypt($request->cookie(Passport::cookie())),
+            $this->encrypter->decrypt($request->cookie('laravel_token')),
             $this->encrypter->getKey(), ['HS256']
         );
     }
