@@ -37,21 +37,15 @@ class CheckClientCredentials
      *
      * @throws \Illuminate\Auth\AuthenticationException
      */
-    public function handle($request, Closure $next, ...$scopes)
+    public function handle($request, Closure $next)
     {
         $psr = (new DiactorosFactory)->createRequest($request);
 
         try{
-            $psr = $this->server->validateAuthenticatedRequest($psr);
+            $this->server->validateAuthenticatedRequest($psr);
         } catch (OAuthServerException $e) {
             throw new AuthenticationException;
         }
-
-        foreach ($scopes as $scope) {
-           if (!in_array($scope,$psr->getAttribute('oauth_scopes'))) {
-             throw new AuthenticationException;
-           }
-         }
 
         return $next($request);
     }
