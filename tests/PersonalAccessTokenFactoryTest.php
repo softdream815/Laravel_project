@@ -39,7 +39,7 @@ class PersonalAccessTokenFactoryTestClientStub
     public $secret = 'something';
 }
 
-class PersonalAccessTokenFactoryTestModelStub extends Laravel\Passport\Token
+class PersonalAccessTokenFactoryTestModelStub extends Illuminate\Database\Eloquent\Model
 {
     public $id = 1;
     public $secret = 'something';

@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\ClientRepository;
+use Laravel\Passport\PersonalAccessClient;
 
 class ClientCommand extends Command
 {
@@ -17,7 +18,7 @@ class ClientCommand extends Command
     protected $signature = 'passport:client
             {--personal : Create a personal access token client}
             {--password : Create a password grant client}
-            {--name : The name of the client}';
+            {--name= : The name of the client}';
 
     /**
      * The console command description.
@@ -62,13 +63,13 @@ class ClientCommand extends Command
             null, $name, 'http://localhost'
         );
 
-        DB::table('oauth_personal_access_clients')->insert([
-            'client_id' => $client->id,
-            'created_at' => new DateTime,
-            'updated_at' => new DateTime,
-        ]);
+        $accessClient = new PersonalAccessClient();
+        $accessClient->client_id = $client->id;
+        $accessClient->save();
 
         $this->info('Personal access client created successfully.');
+        $this->line('<comment>Client ID:</comment> '.$client->id);
+        $this->line('<comment>Client Secret:</comment> '.$client->secret);
     }
 
     /**
@@ -84,11 +85,13 @@ class ClientCommand extends Command
             config('app.name').' Password Grant Client'
         );
 
-        $clients->createPasswordGrantClient(
+        $client = $clients->createPasswordGrantClient(
             null, $name, 'http://localhost'
         );
 
         $this->info('Password grant client created successfully.');
+        $this->line('<comment>Client ID:</comment> '.$client->id);
+        $this->line('<comment>Client Secret:</comment> '.$client->secret);
     }
 
     /**
