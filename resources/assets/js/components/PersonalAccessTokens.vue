@@ -33,10 +33,8 @@
                     <!-- Personal Access Tokens -->
                     <table class="table table-borderless m-b-none" v-if="tokens.length > 0">
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th></th>
-                            </tr>
+                            <th>Name</th>
+                            <th></th>
                         </thead>
 
                         <tbody>
@@ -179,32 +177,18 @@
         },
 
         /**
-         * Prepare the component (Vue 1.x).
+         * Prepare the component.
          */
         ready() {
-            this.prepareComponent();
-        },
+            this.getTokens();
+            this.getScopes();
 
-        /**
-         * Prepare the component (Vue 2.x).
-         */
-        mounted() {
-            this.prepareComponent();
+            $('#modal-create-token').on('shown.bs.modal', () => {
+                $('#create-token-name').focus();
+            });
         },
 
         methods: {
-            /**
-             * Prepare the component.
-             */
-            prepareComponent() {
-                this.getTokens();
-                this.getScopes();
-
-                $('#modal-create-token').on('shown.bs.modal', () => {
-                    $('#create-token-name').focus();
-                });
-            },
-
             /**
              * Get all of the personal access tokens for the user.
              */
