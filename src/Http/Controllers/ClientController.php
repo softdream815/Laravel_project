@@ -2,11 +2,10 @@
 
 namespace Laravel\Passport\Http\Controllers;
 
+use Laravel\Passport\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Laravel\Passport\Client;
 use Laravel\Passport\ClientRepository;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class ClientController
@@ -47,9 +46,7 @@ class ClientController
      */
     public function forUser(Request $request)
     {
-        $userId = $request->user()->getKey();
-
-        return $this->clients->activeForUser($userId)->makeVisible('secret');
+        return $this->clients->activeForUser($request->user()->id)->makeVisible('secret');
     }
 
     /**
@@ -66,7 +63,7 @@ class ClientController
         ])->validate();
 
         return $this->clients->create(
-            $request->user()->getKey(), $request->name, $request->redirect
+            $request->user()->id, $request->name, $request->redirect
         )->makeVisible('secret');
     }
 

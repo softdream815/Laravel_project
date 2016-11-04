@@ -4,7 +4,6 @@ namespace Laravel\Passport\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Response;
-use Laravel\Passport\Passport;
 use Laravel\Passport\ApiTokenCookieFactory;
 
 class CreateFreshApiToken
@@ -15,13 +14,6 @@ class CreateFreshApiToken
      * @var ApiTokenCookieFactory
      */
     protected $cookieFactory;
-
-    /**
-     * The authentication guard.
-     *
-     * @var string
-     */
-    protected $guard;
 
     /**
      * Create a new middleware instance.
@@ -44,13 +36,11 @@ class CreateFreshApiToken
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        $this->guard = $guard;
-
         $response = $next($request);
 
         if ($this->shouldReceiveFreshToken($request, $response)) {
             $response->withCookie($this->cookieFactory->make(
-                $request->user($this->guard)->getKey(), $request->session()->token()
+                $request->user()->getKey(), $request->session()->token()
             ));
         }
 
@@ -78,7 +68,7 @@ class CreateFreshApiToken
      */
     protected function requestShouldReceiveFreshToken($request)
     {
-        return $request->isMethod('GET') && $request->user($this->guard);
+        return $request->isMethod('GET') && $request->user();
     }
 
     /**
@@ -104,7 +94,7 @@ class CreateFreshApiToken
     protected function alreadyContainsToken($response)
     {
         foreach ($response->headers->getCookies() as $cookie) {
-            if ($cookie->getName() === Passport::cookie()) {
+            if ($cookie->getName() === 'laravel_token') {
                 return true;
             }
         }

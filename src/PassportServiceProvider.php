@@ -4,11 +4,7 @@ namespace Laravel\Passport;
 
 use DateInterval;
 use Illuminate\Auth\RequestGuard;
-use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Request;
 use Laravel\Passport\Guards\TokenGuard;
 use Illuminate\Support\ServiceProvider;
 use League\OAuth2\Server\ResourceServer;
@@ -31,10 +27,8 @@ class PassportServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'passport');
 
-        $this->deleteCookieOnLogout();
-
         if ($this->app->runningInConsole()) {
-            $this->registerMigrations();
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
             $this->publishes([
                 __DIR__.'/../resources/views' => base_path('resources/views/vendor/passport'),
@@ -50,22 +44,6 @@ class PassportServiceProvider extends ServiceProvider
                 Console\KeysCommand::class,
             ]);
         }
-    }
-
-    /**
-     * Register Passport's migration files.
-     *
-     * @return void
-     */
-    protected function registerMigrations()
-    {
-        if (Passport::$runsMigrations) {
-            return $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        }
-
-        $this->publishes([
-            __DIR__.'/../database/migrations' => database_path('migrations'),
-        ], 'passport-migrations');
     }
 
     /**
@@ -182,8 +160,8 @@ class PassportServiceProvider extends ServiceProvider
             $this->app->make(Bridge\ClientRepository::class),
             $this->app->make(Bridge\AccessTokenRepository::class),
             $this->app->make(Bridge\ScopeRepository::class),
-            'file://'.Passport::keyPath('oauth-private.key'),
-            'file://'.Passport::keyPath('oauth-public.key')
+            'file://'.storage_path('oauth-private.key'),
+            'file://'.storage_path('oauth-public.key')
         );
     }
 
@@ -197,7 +175,7 @@ class PassportServiceProvider extends ServiceProvider
         $this->app->singleton(ResourceServer::class, function () {
             return new ResourceServer(
                 $this->app->make(Bridge\AccessTokenRepository::class),
-                'file://'.Passport::keyPath('oauth-public.key')
+                'file://'.storage_path('oauth-public.key')
             );
         });
     }
@@ -233,19 +211,5 @@ class PassportServiceProvider extends ServiceProvider
                 $this->app->make('encrypter')
             ))->user($request);
         }, $this->app['request']);
-    }
-
-    /**
-     * Register the cookie deletion event handler.
-     *
-     * @return void
-     */
-    protected function deleteCookieOnLogout()
-    {
-        Event::listen(Logout::class, function () {
-            if (Request::hasCookie(Passport::cookie())) {
-                Cookie::queue(Cookie::forget(Passport::cookie()));
-            }
-        });
     }
 }
