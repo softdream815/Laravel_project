@@ -69,7 +69,6 @@ class RouteRegistrar
     {
         $this->router->post('/oauth/token', [
             'uses' => 'AccessTokenController@issueToken',
-            'middleware' => 'throttle'
         ]);
 
         $this->router->group(['middleware' => ['web', 'auth']], function ($router) {
