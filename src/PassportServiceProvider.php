@@ -14,6 +14,7 @@ use Illuminate\Support\ServiceProvider;
 use League\OAuth2\Server\ResourceServer;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
+use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use Laravel\Passport\Bridge\PersonalAccessGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
@@ -110,6 +111,12 @@ class PassportServiceProvider extends ServiceProvider
                 $server->enableGrantType(
                     new ClientCredentialsGrant, Passport::tokensExpireIn()
                 );
+
+                if (Passport::$implicitGrantEnabled) {
+                    $server->enableGrantType(
+                        $this->makeImplicitGrant(), Passport::tokensExpireIn()
+                    );
+                }
             });
         });
     }
@@ -169,6 +176,16 @@ class PassportServiceProvider extends ServiceProvider
         $grant->setRefreshTokenTTL(Passport::refreshTokensExpireIn());
 
         return $grant;
+    }
+
+    /**
+     * Create and configure an instance of the Implicit grant.
+     *
+     * @return ImplicitGrant
+     */
+    protected function makeImplicitGrant()
+    {
+        return new ImplicitGrant(Passport::tokensExpireIn());
     }
 
     /**

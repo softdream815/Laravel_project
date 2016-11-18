@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Route;
 class Passport
 {
     /**
+     * Indicates if the implicit grant type is enabled.
+     *
+     * @var boolean|null
+     */
+    public static $implicitGrantEnabled = false;
+
+    /**
      * Indicates if Passport should revoke existing tokens when issuing a new one.
      *
      * @var bool
@@ -73,6 +80,18 @@ class Passport
      * @var bool
      */
     public static $runsMigrations = true;
+
+    /**
+     * Enable the implicit grant type.
+     *
+     * @return static
+     */
+    public static function enableImplicitGrant()
+    {
+        static::$implicitGrantEnabled = true;
+
+        return new static;
+    }
 
     /**
      * Get a Passport route registrar.
