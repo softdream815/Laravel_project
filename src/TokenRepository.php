@@ -56,11 +56,7 @@ class TokenRepository
      */
     public function isAccessTokenRevoked($id)
     {
-        if ($token = $this->find($id)) {
-            return $token->revoked;
-        }
-
-        return true;
+        return Token::where('id', $id)->where('revoked', true)->exists();
     }
 
     /**
