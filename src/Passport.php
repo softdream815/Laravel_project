@@ -2,7 +2,6 @@
 
 namespace Laravel\Passport;
 
-use Mockery;
 use DateInterval;
 use Carbon\Carbon;
 use DateTimeInterface;
@@ -106,12 +105,9 @@ class Passport
             $router->all();
         };
 
-        $defaultOptions = [
-            'prefix' => 'oauth',
+        $options = array_merge($options, [
             'namespace' => '\Laravel\Passport\Http\Controllers',
-        ];
-
-        $options = array_merge($defaultOptions, $options);
+        ]);
 
         Route::group($options, function ($router) use ($callback) {
             $callback(new RouteRegistrar($router));
@@ -269,29 +265,6 @@ class Passport
         }
 
         return new static;
-    }
-
-    /**
-     * Set the current user for the application with the given scopes.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @param  array  $scopes
-     * @param  string  $guard
-     * @return void
-     */
-    public static function actingAs($user, $scopes = [], $guard = 'api')
-    {
-        $token = Mockery::mock(Token::class)->shouldIgnoreMissing(false);
-
-        foreach ($scopes as $scope) {
-            $token->shouldReceive('can')->with($scope)->andReturn(true);
-        }
-
-        $user->withAccessToken($token);
-
-        app('auth')->guard($guard)->setUser($user);
-
-        app('auth')->shouldUse($guard);
     }
 
     /**

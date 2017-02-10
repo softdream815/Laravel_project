@@ -46,15 +46,15 @@ class RouteRegistrar
     public function forAuthorization()
     {
         $this->router->group(['middleware' => ['web', 'auth']], function ($router) {
-            $router->get('/authorize', [
+            $router->get('/oauth/authorize', [
                 'uses' => 'AuthorizationController@authorize',
             ]);
 
-            $router->post('/authorize', [
+            $router->post('/oauth/authorize', [
                 'uses' => 'ApproveAuthorizationController@approve',
             ]);
 
-            $router->delete('/authorize', [
+            $router->delete('/oauth/authorize', [
                 'uses' => 'DenyAuthorizationController@deny',
             ]);
         });
@@ -67,17 +67,17 @@ class RouteRegistrar
      */
     public function forAccessTokens()
     {
-        $this->router->post('/token', [
+        $this->router->post('/oauth/token', [
             'uses' => 'AccessTokenController@issueToken',
             'middleware' => 'throttle'
         ]);
 
         $this->router->group(['middleware' => ['web', 'auth']], function ($router) {
-            $router->get('/tokens', [
+            $router->get('/oauth/tokens', [
                 'uses' => 'AuthorizedAccessTokenController@forUser',
             ]);
 
-            $router->delete('/tokens/{token_id}', [
+            $router->delete('/oauth/tokens/{token_id}', [
                 'uses' => 'AuthorizedAccessTokenController@destroy',
             ]);
         });
@@ -90,7 +90,7 @@ class RouteRegistrar
      */
     public function forTransientTokens()
     {
-        $this->router->post('/token/refresh', [
+        $this->router->post('/oauth/token/refresh', [
             'middleware' => ['web', 'auth'],
             'uses' => 'TransientTokenController@refresh',
         ]);
@@ -104,19 +104,19 @@ class RouteRegistrar
     public function forClients()
     {
         $this->router->group(['middleware' => ['web', 'auth']], function ($router) {
-            $router->get('/clients', [
+            $router->get('/oauth/clients', [
                 'uses' => 'ClientController@forUser',
             ]);
 
-            $router->post('/clients', [
+            $router->post('/oauth/clients', [
                 'uses' => 'ClientController@store',
             ]);
 
-            $router->put('/clients/{client_id}', [
+            $router->put('/oauth/clients/{client_id}', [
                 'uses' => 'ClientController@update',
             ]);
 
-            $router->delete('/clients/{client_id}', [
+            $router->delete('/oauth/clients/{client_id}', [
                 'uses' => 'ClientController@destroy',
             ]);
         });
@@ -130,19 +130,19 @@ class RouteRegistrar
     public function forPersonalAccessTokens()
     {
         $this->router->group(['middleware' => ['web', 'auth']], function ($router) {
-            $router->get('/scopes', [
+            $router->get('/oauth/scopes', [
                 'uses' => 'ScopeController@all',
             ]);
 
-            $router->get('/personal-access-tokens', [
+            $router->get('/oauth/personal-access-tokens', [
                 'uses' => 'PersonalAccessTokenController@forUser',
             ]);
 
-            $router->post('/personal-access-tokens', [
+            $router->post('/oauth/personal-access-tokens', [
                 'uses' => 'PersonalAccessTokenController@store',
             ]);
 
-            $router->delete('/personal-access-tokens/{token_id}', [
+            $router->delete('/oauth/personal-access-tokens/{token_id}', [
                 'uses' => 'PersonalAccessTokenController@destroy',
             ]);
         });
