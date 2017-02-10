@@ -250,9 +250,9 @@
 
                             this.showAccessToken(response.data.accessToken);
                         })
-                        .catch(error => {
-                            if (typeof error.response.data === 'object') {
-                                this.form.errors = _.flatten(_.toArray(error.response.data));
+                        .catch(response => {
+                            if (typeof response.data === 'object') {
+                                this.form.errors = _.flatten(_.toArray(response.data));
                             } else {
                                 this.form.errors = ['Something went wrong. Please try again.'];
                             }

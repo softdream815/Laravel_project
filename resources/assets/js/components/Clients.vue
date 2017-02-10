@@ -331,9 +331,9 @@
 
                         $(modal).modal('hide');
                     })
-                    .catch(error => {
-                        if (typeof error.response.data === 'object') {
-                            form.errors = _.flatten(_.toArray(error.response.data));
+                    .catch(response => {
+                        if (typeof response.data === 'object') {
+                            form.errors = _.flatten(_.toArray(response.data));
                         } else {
                             form.errors = ['Something went wrong. Please try again.'];
                         }
