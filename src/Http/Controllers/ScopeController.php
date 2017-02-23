@@ -9,7 +9,7 @@ class ScopeController
     /**
      * Get all of the available scopes for the application.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Response
      */
     public function all()
     {
