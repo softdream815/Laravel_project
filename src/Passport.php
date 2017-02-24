@@ -95,10 +95,11 @@ class Passport
     }
 
     /**
-     * Get a Passport route registrar.
+     * Binds the Passport routes into the controller.
      *
+     * @param  callable|null  $callback
      * @param  array  $options
-     * @return RouteRegistrar
+     * @return void
      */
     public static function routes($callback = null, array $options = [])
     {
