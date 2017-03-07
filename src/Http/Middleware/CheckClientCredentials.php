@@ -47,15 +47,11 @@ class CheckClientCredentials
             throw new AuthenticationException;
         }
 
-        $tokenScopes = $psr->getAttribute('oauth_scopes');
-        
-        if (!in_array('*', $tokenScopes)) {
-            foreach ($scopes as $scope) {
-               if (!in_array($scope,$tokenScopes)) {
-                 throw new AuthenticationException;
-               }
-             }
-        }
+        foreach ($scopes as $scope) {
+           if (!in_array($scope,$psr->getAttribute('oauth_scopes'))) {
+             throw new AuthenticationException;
+           }
+         }
 
         return $next($request);
     }
