@@ -91,7 +91,8 @@ class ClientController
         ])->validate();
 
         return $this->clients->update(
-            $client, $request->name, $request->redirect
+            $client,
+            $request->name, $request->redirect
         );
     }
 

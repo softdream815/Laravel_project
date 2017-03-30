@@ -2,24 +2,21 @@
 
 namespace Laravel\Passport\Http\Controllers;
 
-use Laravel\Passport\Token;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Laravel\Passport\Token;
 use Laravel\Passport\TokenRepository;
 
 class AuthorizedAccessTokenController
 {
     /**
-     * The token repository implementation.
-     *
      * @var TokenRepository
      */
     protected $tokenRepository;
 
     /**
-     * Create a new controller instance.
-     *
      * @param TokenRepository $tokenRepository
+     *
      * @return void
      */
     public function __construct(TokenRepository $tokenRepository)
@@ -51,9 +48,7 @@ class AuthorizedAccessTokenController
      */
     public function destroy(Request $request, $tokenId)
     {
-        $token = $this->tokenRepository->findForUser(
-            $tokenId, $request->user()->getKey()
-        );
+        $token = $this->tokenRepository->findForUser($tokenId, $request->user()->getKey());
 
         if (is_null($token)) {
             return new Response('', 404);
