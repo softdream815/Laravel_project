@@ -79,9 +79,7 @@ class ClientController
      */
     public function update(Request $request, $clientId)
     {
-        $client = $this->clients->findForUser($clientId, $request->user()->getKey());
-
-        if (! $client) {
+        if (! $request->user()->clients->find($clientId)) {
             return new Response('', 404);
         }
 
@@ -91,7 +89,7 @@ class ClientController
         ])->validate();
 
         return $this->clients->update(
-            $client,
+            $request->user()->clients->find($clientId),
             $request->name, $request->redirect
         );
     }
@@ -105,14 +103,12 @@ class ClientController
      */
     public function destroy(Request $request, $clientId)
     {
-        $client = $this->clients->findForUser($clientId, $request->user()->getKey());
-
-        if (! $client) {
+        if (! $request->user()->clients->find($clientId)) {
             return new Response('', 404);
         }
 
         $this->clients->delete(
-            $client
+            $request->user()->clients->find($clientId)
         );
     }
 }

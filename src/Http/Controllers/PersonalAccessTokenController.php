@@ -7,8 +7,6 @@ use Illuminate\Http\Response;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PersonalAccessTokenResult;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Laravel\Passport\Token;
-use Laravel\Passport\TokenRepository;
 
 class PersonalAccessTokenController
 {
@@ -20,22 +18,14 @@ class PersonalAccessTokenController
     protected $validation;
 
     /**
-     * @var TokenRepository
-     */
-    protected $tokenRepository;
-
-    /**
      * Create a controller instance.
      *
-     * @param  ValidationFactory $validation
-     * @param  TokenRepository   $tokenRepository
-     *
+     * @param  ValidationFactory  $validation
      * @return void
      */
-    public function __construct(ValidationFactory $validation, TokenRepository $tokenRepository)
+    public function __construct(ValidationFactory $validation)
     {
         $this->validation = $validation;
-        $this->tokenRepository = $tokenRepository;
     }
 
     /**
@@ -46,9 +36,7 @@ class PersonalAccessTokenController
      */
     public function forUser(Request $request)
     {
-        $tokens = $this->tokenRepository->forUser($request->user()->getKey());
-
-        return $tokens->load('client')->filter(function ($token) {
+        return $request->user()->tokens->load('client')->filter(function ($token) {
             return $token->client->personal_access_client && ! $token->revoked;
         })->values();
     }
@@ -80,9 +68,7 @@ class PersonalAccessTokenController
      */
     public function destroy(Request $request, $tokenId)
     {
-        $token = $this->tokenRepository->findForUser($tokenId, $request->user()->getKey());
-
-        if (is_null($token)) {
+        if (is_null($token = $request->user()->tokens->find($tokenId))) {
             return new Response('', 404);
         }
 
