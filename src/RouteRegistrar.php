@@ -9,14 +9,14 @@ class RouteRegistrar
     /**
      * The router implementation.
      *
-     * @var \Illuminate\Contracts\Routing\Registrar
+     * @var Router
      */
     protected $router;
 
     /**
      * Create a new route registrar instance.
      *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
+     * @param  Router  $router
      * @return void
      */
     public function __construct(Router $router)
@@ -69,7 +69,7 @@ class RouteRegistrar
     {
         $this->router->post('/token', [
             'uses' => 'AccessTokenController@issueToken',
-            'middleware' => 'throttle'
+            'middleware' => 'throttle',
         ]);
 
         $this->router->group(['middleware' => ['web', 'auth']], function ($router) {

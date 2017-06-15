@@ -21,22 +21,22 @@ class AuthorizationController
     /**
      * The authorization server.
      *
-     * @var \League\OAuth2\Server\AuthorizationServer
+     * @var AuthorizationServer
      */
     protected $server;
 
     /**
      * The response factory implementation.
      *
-     * @var \Illuminate\Contracts\Routing\ResponseFactory
+     * @var ResponseFactory
      */
     protected $response;
 
     /**
      * Create a new controller instance.
      *
-     * @param  \League\OAuth2\Server\AuthorizationServer  $server
-     * @param  \Illuminate\Contracts\Routing\ResponseFactory  $response
+     * @param  AuthorizationServer  $server
+     * @param  ResponseFactory  $response
      * @return void
      */
     public function __construct(AuthorizationServer $server, ResponseFactory $response)
@@ -48,10 +48,10 @@ class AuthorizationController
     /**
      * Authorize a client to access the user's account.
      *
-     * @param  \Psr\Http\Message\ServerRequestInterface  $psrRequest
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Laravel\Passport\ClientRepository  $clients
-     * @param  \Laravel\Passport\TokenRepository  $tokens
+     * @param  ServerRequestInterface  $psrRequest
+     * @param  Request  $request
+     * @param  ClientRepository  $clients
+     * @param  TokenRepository  $tokens
      * @return \Illuminate\Http\Response
      */
     public function authorize(ServerRequestInterface $psrRequest,
@@ -87,7 +87,7 @@ class AuthorizationController
     /**
      * Transform the authorization requests's scopes into Scope instances.
      *
-     * @param  \League\OAuth2\Server\RequestTypes\AuthorizationRequest  $authRequest
+     * @param  AuthorizationRequest  $authRequest
      * @return array
      */
     protected function parseScopes($authRequest)
@@ -102,8 +102,8 @@ class AuthorizationController
     /**
      * Approve the authorization request.
      *
-     * @param  \League\OAuth2\Server\RequestTypes\AuthorizationRequest  $authRequest
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  AuthorizationRequest  $authRequest
+     * @param  Model  $user
      * @return \Psr\Http\Message\ResponseInterface
      */
     protected function approveRequest($authRequest, $user)

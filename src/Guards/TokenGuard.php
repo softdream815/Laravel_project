@@ -22,46 +22,46 @@ class TokenGuard
     /**
      * The resource server instance.
      *
-     * @var \League\OAuth2\Server\ResourceServer
+     * @var ResourceServer
      */
     protected $server;
 
     /**
      * The user provider implementation.
      *
-     * @var \Illuminate\Contracts\Auth\UserProvider
+     * @var UserProvider
      */
     protected $provider;
 
     /**
      * The token repository instance.
      *
-     * @var \Laravel\Passport\TokenRepository
+     * @var TokenRepository
      */
     protected $tokens;
 
     /**
      * The client repository instance.
      *
-     * @var \Laravel\Passport\ClientRepository
+     * @var ClientRepository
      */
     protected $clients;
 
     /**
      * The encrypter implementation.
      *
-     * @var \Illuminate\Contracts\Encryption\Encrypter
+     * @var Encrypter
      */
     protected $encrypter;
 
     /**
      * Create a new token guard instance.
      *
-     * @param  \League\OAuth2\Server\ResourceServer  $server
-     * @param  \Illuminate\Contracts\Auth\UserProvider  $provider
-     * @param  \Laravel\Passport\TokenRepository  $tokens
-     * @param  \Laravel\Passport\ClientRepository  $clients
-     * @param  \Illuminate\Contracts\Encryption\Encrypter  $encrypter
+     * @param  ResourceServer  $server
+     * @param  UserProvider  $provider
+     * @param  TokenRepository  $tokens
+     * @param  ClientRepository  $clients
+     * @param  Encrypter  $encrypter
      * @return void
      */
     public function __construct(ResourceServer $server,
@@ -80,7 +80,6 @@ class TokenGuard
     /**
      * Get the user for the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  Request  $request
      * @return mixed
      */
@@ -96,7 +95,7 @@ class TokenGuard
     /**
      * Authenticate the incoming request via the Bearer token.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     protected function authenticateViaBearerToken($request)
@@ -147,7 +146,7 @@ class TokenGuard
     /**
      * Authenticate the incoming request via the token cookie.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     protected function authenticateViaCookie($request)
@@ -180,7 +179,7 @@ class TokenGuard
     /**
      * Decode and decrypt the JWT token cookie.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return array
      */
     protected function decodeJwtTokenCookie($request)
@@ -195,7 +194,7 @@ class TokenGuard
      * Determine if the CSRF / header are valid and match.
      *
      * @param  array  $token
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return bool
      */
     protected function validCsrf($token, $request)

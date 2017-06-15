@@ -13,14 +13,14 @@ class ApproveAuthorizationController
     /**
      * The authorization server.
      *
-     * @var \League\OAuth2\Server\AuthorizationServer
+     * @var AuthorizationServer
      */
     protected $server;
 
     /**
      * Create a new controller instance.
      *
-     * @param  \League\OAuth2\Server\AuthorizationServer  $server
+     * @param  AuthorizationServer  $server
      * @return void
      */
     public function __construct(AuthorizationServer $server)
@@ -31,8 +31,8 @@ class ApproveAuthorizationController
     /**
      * Approve the authorization request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function approve(Request $request)
     {

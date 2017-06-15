@@ -11,14 +11,14 @@ class TransientTokenController
     /**
      * The cookie factory instance.
      *
-     * @var \Laravel\Passport\ApiTokenCookieFactory
+     * @var ApiTokenCookieFactory
      */
     protected $cookieFactory;
 
     /**
      * Create a new controller instance.
      *
-     * @param  \Laravel\Passport\ApiTokenCookieFactory  $cookieFactory
+     * @param  ApiTokenCookieFactory  $cookieFactory
      * @return void
      */
     public function __construct(ApiTokenCookieFactory $cookieFactory)
@@ -29,8 +29,8 @@ class TransientTokenController
     /**
      * Get a fresh transient token cookie for the authenticated user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function refresh(Request $request)
     {
