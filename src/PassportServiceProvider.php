@@ -245,7 +245,7 @@ class PassportServiceProvider extends ServiceProvider
             return (new TokenGuard(
                 $this->app->make(ResourceServer::class),
                 Auth::createUserProvider($config['provider']),
-                $this->app->make(TokenRepository::class),
+                new TokenRepository,
                 $this->app->make(ClientRepository::class),
                 $this->app->make('encrypter')
             ))->user($request);
