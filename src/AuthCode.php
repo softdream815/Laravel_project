@@ -41,10 +41,10 @@ class AuthCode extends Model
     /**
      * Get the client that owns the authentication code.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function client()
     {
-        return $this->belongsTo(Client::class);
+        return $this->hasMany(Client::class);
     }
 }
