@@ -20,7 +20,7 @@ class Client implements ClientEntityInterface
      */
     public function __construct($identifier, $name, $redirectUri)
     {
-        $this->setIdentifier((string) $identifier);
+        $this->setIdentifier($identifier);
 
         $this->name = $name;
         $this->redirectUri = explode(',', $redirectUri);
