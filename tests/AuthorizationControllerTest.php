@@ -1,12 +1,11 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use Illuminate\Container\Container;
 use League\OAuth2\Server\AuthorizationServer;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Routing\ResponseFactory;
 
-class AuthorizationControllerTest extends TestCase
+class AuthorizationControllerTest extends PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {

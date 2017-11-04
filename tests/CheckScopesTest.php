@@ -1,9 +1,8 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use Laravel\Passport\Http\Middleware\CheckScopes;
 
-class CheckScopesTest extends TestCase
+class CheckScopesTest extends PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {

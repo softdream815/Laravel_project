@@ -14,8 +14,8 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
-        "firebase/php-jwt": "~3.0|~4.0",
+        "php": ">=5.6.4",
+        "firebase/php-jwt": "~3.0|~4.0|~5.0",
         "guzzlehttp/guzzle": "~6.0",
         "illuminate/auth": "~5.4",
         "illuminate/console": "~5.4",
@@ -31,8 +31,8 @@
         "zendframework/zend-diactoros": "~1.0"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9",
-        "phpunit/phpunit": "~6.0"
+        "mockery/mockery": "~1.0",
+        "phpunit/phpunit": "~5.0"
     },
     "autoload": {
         "psr-4": {
