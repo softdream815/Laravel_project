@@ -4,8 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 use Laravel\Passport\Passport;
+use PHPUnit\Framework\TestCase;
 
-class CreateFreshApiTokenTest extends PHPUnit_Framework_TestCase
+class CreateFreshApiTokenTest extends TestCase
 {
     public function tearDown()
     {
