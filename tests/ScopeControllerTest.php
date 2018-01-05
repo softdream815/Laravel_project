@@ -1,8 +1,6 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-
-class ScopeControllerTest extends TestCase
+class ScopeControllerTest extends PHPUnit_Framework_TestCase
 {
     public function testShouldGetScopes()
     {
