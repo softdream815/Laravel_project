@@ -2,32 +2,36 @@
     .action-link {
         cursor: pointer;
     }
+
+    .m-b-none {
+        margin-bottom: 0;
+    }
 </style>
 
 <template>
     <div>
         <div>
-            <div class="card card-default">
-                <div class="card-header">
+            <div class="panel panel-default">
+                <div class="panel-heading">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span>
                             Personal Access Tokens
                         </span>
 
-                        <a class="action-link" tabindex="-1" @click="showCreateTokenForm">
+                        <a class="action-link" @click="showCreateTokenForm">
                             Create New Token
                         </a>
                     </div>
                 </div>
 
-                <div class="card-body">
+                <div class="panel-body">
                     <!-- No Tokens Notice -->
-                    <p class="mb-0" v-if="tokens.length === 0">
+                    <p class="m-b-none" v-if="tokens.length === 0">
                         You have not created any personal access tokens.
                     </p>
 
                     <!-- Personal Access Tokens -->
-                    <table class="table table-borderless mb-0" v-if="tokens.length > 0">
+                    <table class="table table-borderless m-b-none" v-if="tokens.length > 0">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -60,17 +64,17 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
                         <h4 class="modal-title">
                             Create Token
                         </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
 
                     <div class="modal-body">
                         <!-- Form Errors -->
                         <div class="alert alert-danger" v-if="form.errors.length > 0">
-                            <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
+                            <p><strong>Whoops!</strong> Something went wrong!</p>
                             <br>
                             <ul>
                                 <li v-for="error in form.errors">
@@ -80,10 +84,10 @@
                         </div>
 
                         <!-- Create Token Form -->
-                        <form role="form" @submit.prevent="store">
+                        <form class="form-horizontal" role="form" @submit.prevent="store">
                             <!-- Name -->
-                            <div class="form-group row">
-                                <label class="col-md-4 col-form-label">Name</label>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Name</label>
 
                                 <div class="col-md-6">
                                     <input id="create-token-name" type="text" class="form-control" name="name" v-model="form.name">
@@ -92,7 +96,7 @@
 
                             <!-- Scopes -->
                             <div class="form-group" v-if="scopes.length > 0">
-                                <label class="col-md-4 col-form-label">Scopes</label>
+                                <label class="col-md-4 control-label">Scopes</label>
 
                                 <div class="col-md-6">
                                     <div v-for="scope in scopes">
@@ -113,7 +117,7 @@
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="store">
                             Create
@@ -128,11 +132,11 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
                         <h4 class="modal-title">
                             Personal Access Token
                         </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
 
                     <div class="modal-body">
@@ -141,12 +145,12 @@
                             You may now use this token to make API requests.
                         </p>
 
-                        <textarea class="form-control" rows="10">{{ accessToken }}</textarea>
+                        <pre><code>{{ accessToken }}</code></pre>
                     </div>
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -248,7 +252,7 @@
                         })
                         .catch(error => {
                             if (typeof error.response.data === 'object') {
-                                this.form.errors = _.flatten(_.toArray(error.response.data.errors));
+                                this.form.errors = _.flatten(_.toArray(error.response.data));
                             } else {
                                 this.form.errors = ['Something went wrong. Please try again.'];
                             }

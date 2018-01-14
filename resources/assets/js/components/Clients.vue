@@ -2,30 +2,34 @@
     .action-link {
         cursor: pointer;
     }
+
+    .m-b-none {
+        margin-bottom: 0;
+    }
 </style>
 
 <template>
     <div>
-        <div class="card card-default">
-            <div class="card-header">
+        <div class="panel panel-default">
+            <div class="panel-heading">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
                         OAuth Clients
                     </span>
 
-                    <a class="action-link" tabindex="-1" @click="showCreateClientForm">
+                    <a class="action-link" @click="showCreateClientForm">
                         Create New Client
                     </a>
                 </div>
             </div>
 
-            <div class="card-body">
+            <div class="panel-body">
                 <!-- Current Clients -->
-                <p class="mb-0" v-if="clients.length === 0">
+                <p class="m-b-none" v-if="clients.length === 0">
                     You have not created any OAuth clients.
                 </p>
 
-                <table class="table table-borderless mb-0" v-if="clients.length > 0">
+                <table class="table table-borderless m-b-none" v-if="clients.length > 0">
                     <thead>
                         <tr>
                             <th>Client ID</th>
@@ -55,7 +59,7 @@
 
                             <!-- Edit Button -->
                             <td style="vertical-align: middle;">
-                                <a class="action-link" tabindex="-1" @click="edit(client)">
+                                <a class="action-link" @click="edit(client)">
                                     Edit
                                 </a>
                             </td>
@@ -77,17 +81,17 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
                         <h4 class="modal-title">
                             Create Client
                         </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
 
                     <div class="modal-body">
                         <!-- Form Errors -->
                         <div class="alert alert-danger" v-if="createForm.errors.length > 0">
-                            <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
+                            <p><strong>Whoops!</strong> Something went wrong!</p>
                             <br>
                             <ul>
                                 <li v-for="error in createForm.errors">
@@ -97,30 +101,30 @@
                         </div>
 
                         <!-- Create Client Form -->
-                        <form role="form">
+                        <form class="form-horizontal" role="form">
                             <!-- Name -->
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label">Name</label>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Name</label>
 
-                                <div class="col-md-9">
+                                <div class="col-md-7">
                                     <input id="create-client-name" type="text" class="form-control"
                                                                 @keyup.enter="store" v-model="createForm.name">
 
-                                    <span class="form-text text-muted">
+                                    <span class="help-block">
                                         Something your users will recognize and trust.
                                     </span>
                                 </div>
                             </div>
 
                             <!-- Redirect URL -->
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label">Redirect URL</label>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Redirect URL</label>
 
-                                <div class="col-md-9">
+                                <div class="col-md-7">
                                     <input type="text" class="form-control" name="redirect"
                                                     @keyup.enter="store" v-model="createForm.redirect">
 
-                                    <span class="form-text text-muted">
+                                    <span class="help-block">
                                         Your application's authorization callback URL.
                                     </span>
                                 </div>
@@ -130,7 +134,7 @@
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="store">
                             Create
@@ -145,17 +149,17 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
                         <h4 class="modal-title">
                             Edit Client
                         </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
 
                     <div class="modal-body">
                         <!-- Form Errors -->
                         <div class="alert alert-danger" v-if="editForm.errors.length > 0">
-                            <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
+                            <p><strong>Whoops!</strong> Something went wrong!</p>
                             <br>
                             <ul>
                                 <li v-for="error in editForm.errors">
@@ -165,30 +169,30 @@
                         </div>
 
                         <!-- Edit Client Form -->
-                        <form role="form">
+                        <form class="form-horizontal" role="form">
                             <!-- Name -->
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label">Name</label>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Name</label>
 
-                                <div class="col-md-9">
+                                <div class="col-md-7">
                                     <input id="edit-client-name" type="text" class="form-control"
                                                                 @keyup.enter="update" v-model="editForm.name">
 
-                                    <span class="form-text text-muted">
+                                    <span class="help-block">
                                         Something your users will recognize and trust.
                                     </span>
                                 </div>
                             </div>
 
                             <!-- Redirect URL -->
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label">Redirect URL</label>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Redirect URL</label>
 
-                                <div class="col-md-9">
+                                <div class="col-md-7">
                                     <input type="text" class="form-control" name="redirect"
                                                     @keyup.enter="update" v-model="editForm.redirect">
 
-                                    <span class="form-text text-muted">
+                                    <span class="help-block">
                                         Your application's authorization callback URL.
                                     </span>
                                 </div>
@@ -198,7 +202,7 @@
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="update">
                             Save Changes
@@ -329,7 +333,7 @@
                     })
                     .catch(error => {
                         if (typeof error.response.data === 'object') {
-                            form.errors = _.flatten(_.toArray(error.response.data.errors));
+                            form.errors = _.flatten(_.toArray(error.response.data));
                         } else {
                             form.errors = ['Something went wrong. Please try again.'];
                         }

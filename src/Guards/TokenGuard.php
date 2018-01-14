@@ -81,7 +81,6 @@ class TokenGuard
      * Get the user for the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  Request  $request
      * @return mixed
      */
     public function user(Request $request)
@@ -138,7 +137,7 @@ class TokenGuard
 
             return $token ? $user->withAccessToken($token) : null;
         } catch (OAuthServerException $e) {
-            return Container::getInstance()->make(
+            Container::getInstance()->make(
                 ExceptionHandler::class
             )->report($e);
         }

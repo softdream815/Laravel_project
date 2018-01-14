@@ -3,11 +3,10 @@
 use Mockery\Mock;
 use Illuminate\Http\Request;
 use Laravel\Passport\Client;
-use PHPUnit\Framework\TestCase;
 use Laravel\Passport\TokenRepository;
 use Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController;
 
-class AuthorizedAccessTokenControllerTest extends TestCase
+class AuthorizedAccessTokenControllerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var Mock|TokenRepository

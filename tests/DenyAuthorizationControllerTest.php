@@ -1,9 +1,8 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use Illuminate\Contracts\Routing\ResponseFactory;
 
-class DenyAuthorizationControllerTest extends TestCase
+class DenyAuthorizationControllerTest extends PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {
