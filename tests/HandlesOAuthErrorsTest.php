@@ -1,10 +1,11 @@
 <?php
 
+use Illuminate\Http\Response;
+use PHPUnit\Framework\TestCase;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Debug\ExceptionHandler;
-use Illuminate\Http\Response;
 
-class HandlesOAuthErrorsTest extends PHPUnit_Framework_TestCase
+class HandlesOAuthErrorsTest extends TestCase
 {
     public function tearDown()
     {
