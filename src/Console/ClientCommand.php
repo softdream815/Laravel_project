@@ -61,6 +61,10 @@ class ClientCommand extends Command
             null, $name, 'http://localhost'
         );
 
+        $accessClient = new PersonalAccessClient();
+        $accessClient->client_id = $client->id;
+        $accessClient->save();
+
         $this->info('Personal access client created successfully.');
         $this->line('<comment>Client ID:</comment> '.$client->id);
         $this->line('<comment>Client Secret:</comment> '.$client->secret);
