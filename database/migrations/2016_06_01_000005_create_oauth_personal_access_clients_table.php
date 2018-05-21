@@ -27,6 +27,6 @@ class CreateOauthPersonalAccessClientsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('oauth_personal_access_clients');
+        Schema::drop('oauth_personal_access_clients');
     }
 }
