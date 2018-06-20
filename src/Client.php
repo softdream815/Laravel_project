@@ -35,7 +35,6 @@ class Client extends Model
      * @var array
      */
     protected $casts = [
-        'grant_types' => 'array',
         'personal_access_client' => 'bool',
         'password_client' => 'bool',
         'revoked' => 'bool',

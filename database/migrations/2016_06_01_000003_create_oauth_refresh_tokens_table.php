@@ -28,6 +28,6 @@ class CreateOauthRefreshTokensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('oauth_refresh_tokens');
+        Schema::drop('oauth_refresh_tokens');
     }
 }
