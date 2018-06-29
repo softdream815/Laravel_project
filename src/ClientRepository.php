@@ -12,9 +12,7 @@ class ClientRepository
      */
     public function find($id)
     {
-        $client = Passport::client();
-
-        return $client->where($client->getKeyName(), $id)->first();
+        return Passport::client()->where('id', $id)->first();
     }
 
     /**
@@ -39,10 +37,8 @@ class ClientRepository
      */
     public function findForUser($clientId, $userId)
     {
-        $client = Passport::client();
-
-        return $client
-                    ->where($client->getKeyName(), $clientId)
+        return Passport::client()
+                    ->where('id', $clientId)
                     ->where('user_id', $userId)
                     ->first();
     }
@@ -84,9 +80,7 @@ class ClientRepository
             return $this->find(Passport::$personalAccessClientId);
         }
 
-        $client = Passport::personalAccessClient();
-
-        return $client->orderBy($client->getKeyName(), 'desc')->first()->client;
+        return Passport::personalAccessClient()->orderBy('id', 'desc')->first()->client;
     }
 
     /**
