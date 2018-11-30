@@ -25,7 +25,7 @@ class InstallCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {

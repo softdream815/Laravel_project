@@ -28,7 +28,7 @@ class KeysCommand extends Command
      * Execute the console command.
      *
      * @param  \phpseclib\Crypt\RSA  $rsa
-     * @return void
+     * @return mixed
      */
     public function handle(RSA $rsa)
     {
@@ -40,12 +40,12 @@ class KeysCommand extends Command
         ];
 
         if ((file_exists($publicKey) || file_exists($privateKey)) && ! $this->option('force')) {
-            $this->error('Encryption keys already exist. Use the --force option to overwrite them.');
-        } else {
-            file_put_contents($publicKey, array_get($keys, 'publickey'));
-            file_put_contents($privateKey, array_get($keys, 'privatekey'));
-
-            $this->info('Encryption keys generated successfully.');
+            return $this->error('Encryption keys already exist. Use the --force option to overwrite them.');
         }
+
+        file_put_contents($publicKey, array_get($keys, 'publickey'));
+        file_put_contents($privateKey, array_get($keys, 'privatekey'));
+
+        $this->info('Encryption keys generated successfully.');
     }
 }
