@@ -2,12 +2,11 @@
 
 namespace Laravel\Passport\Tests;
 
+use Laravel\Passport\Client;
+use Laravel\Passport\Http\Controllers\ClientController;
 use Mockery as m;
 use Illuminate\Http\Request;
-use Laravel\Passport\Client;
 use PHPUnit\Framework\TestCase;
-use Laravel\Passport\Http\Rules\RedirectRule;
-use Laravel\Passport\Http\Controllers\ClientController;
 
 class ClientControllerTest extends TestCase
 {
@@ -26,9 +25,7 @@ class ClientControllerTest extends TestCase
         $request->shouldReceive('user')->andReturn(new ClientControllerFakeUser);
 
         $controller = new ClientController(
-            $clients,
-            m::mock('Illuminate\Contracts\Validation\Factory'),
-            m::mock(RedirectRule::class)
+            $clients, m::mock('Illuminate\Contracts\Validation\Factory')
         );
 
         $this->assertEquals($client, $controller->forUser($request));
@@ -48,21 +45,17 @@ class ClientControllerTest extends TestCase
             ->with(1, 'client name', 'http://localhost')
             ->andReturn($client = new Client);
 
-        $redirectRule = m::mock(RedirectRule::class);
-
         $validator = m::mock('Illuminate\Contracts\Validation\Factory');
         $validator->shouldReceive('make')->once()->with([
             'name' => 'client name',
             'redirect' => 'http://localhost',
         ], [
             'name' => 'required|max:255',
-            'redirect' => ['required', $redirectRule],
+            'redirect' => 'required|url',
         ])->andReturn($validator);
         $validator->shouldReceive('validate')->once();
 
-        $controller = new ClientController(
-            $clients, $validator, $redirectRule
-        );
+        $controller = new ClientController($clients, $validator);
 
         $this->assertEquals($client, $controller->store($request));
     }
@@ -86,21 +79,17 @@ class ClientControllerTest extends TestCase
             m::type('Laravel\Passport\Client'), 'client name', 'http://localhost'
         )->andReturn('response');
 
-        $redirectRule = m::mock(RedirectRule::class);
-
         $validator = m::mock('Illuminate\Contracts\Validation\Factory');
         $validator->shouldReceive('make')->once()->with([
             'name' => 'client name',
             'redirect' => 'http://localhost',
         ], [
             'name' => 'required|max:255',
-            'redirect' => ['required', $redirectRule],
+            'redirect' => 'required|url',
         ])->andReturn($validator);
         $validator->shouldReceive('validate')->once();
 
-        $controller = new ClientController(
-            $clients, $validator, $redirectRule
-        );
+        $controller = new ClientController($clients, $validator);
 
         $this->assertEquals('response', $controller->update($request, 1));
     }
@@ -123,9 +112,7 @@ class ClientControllerTest extends TestCase
 
         $validator = m::mock('Illuminate\Contracts\Validation\Factory');
 
-        $controller = new ClientController(
-            $clients, $validator, m::mock(RedirectRule::class)
-        );
+        $controller = new ClientController($clients, $validator);
 
         $this->assertEquals(404, $controller->update($request, 1)->status());
     }
@@ -151,9 +138,7 @@ class ClientControllerTest extends TestCase
 
         $validator = m::mock('Illuminate\Contracts\Validation\Factory');
 
-        $controller = new ClientController(
-            $clients, $validator, m::mock(RedirectRule::class)
-        );
+        $controller = new ClientController($clients, $validator);
 
         $controller->destroy($request, 1);
     }
@@ -176,9 +161,7 @@ class ClientControllerTest extends TestCase
 
         $validator = m::mock('Illuminate\Contracts\Validation\Factory');
 
-        $controller = new ClientController(
-            $clients, $validator, m::mock(RedirectRule::class)
-        );
+        $controller = new ClientController($clients, $validator);
 
         $this->assertEquals(404, $controller->destroy($request, 1)->status());
     }
