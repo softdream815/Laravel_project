@@ -2,23 +2,20 @@
 
 namespace Laravel\Passport\Tests;
 
-use Exception;
-use Illuminate\Http\Request;
-use Laravel\Passport\ClientRepository;
-use Laravel\Passport\Token;
-use Laravel\Passport\TokenRepository;
-use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Mockery as m;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Laravel\Passport\Token;
+use Illuminate\Http\Request;
 use Zend\Diactoros\Response;
 use Laravel\Passport\Passport;
 use PHPUnit\Framework\TestCase;
 use Laravel\Passport\Bridge\Scope;
-use Illuminate\Container\Container;
+use Laravel\Passport\TokenRepository;
+use Laravel\Passport\ClientRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use League\OAuth2\Server\AuthorizationServer;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Laravel\Passport\Http\Controllers\AuthorizationController;
 
 class AuthorizationControllerTest extends TestCase
@@ -67,29 +64,6 @@ class AuthorizationControllerTest extends TestCase
         $this->assertEquals('view', $controller->authorize(
             m::mock(ServerRequestInterface::class), $request, $clients, $tokens
         ));
-    }
-
-    public function test_authorization_exceptions_are_handled()
-    {
-        Container::getInstance()->instance(ExceptionHandler::class, $exceptions = m::mock());
-        $exceptions->shouldReceive('report')->once();
-
-        $server = m::mock(AuthorizationServer::class);
-        $response = m::mock(ResponseFactory::class);
-
-        $controller = new AuthorizationController($server, $response);
-
-        $server->shouldReceive('validateAuthorizationRequest')->andThrow(new Exception('whoops'));
-
-        $request = m::mock(Request::class);
-        $request->shouldReceive('session')->andReturn($session = m::mock());
-
-        $clients = m::mock(ClientRepository::class);
-        $tokens = m::mock(TokenRepository::class);
-
-        $this->assertEquals('whoops', $controller->authorize(
-            m::mock(ServerRequestInterface::class), $request, $clients, $tokens
-        )->getContent());
     }
 
     public function test_request_is_approved_if_valid_token_exists()
