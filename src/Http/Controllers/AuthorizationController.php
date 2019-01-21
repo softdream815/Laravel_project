@@ -14,7 +14,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 
 class AuthorizationController
 {
-    use ConvertsPsrResponses;
+    use HandlesOAuthErrors;
 
     /**
      * The authorization server.
@@ -57,27 +57,29 @@ class AuthorizationController
                               ClientRepository $clients,
                               TokenRepository $tokens)
     {
-        $authRequest = $this->server->validateAuthorizationRequest($psrRequest);
+        return $this->withErrorHandling(function () use ($psrRequest, $request, $clients, $tokens) {
+            $authRequest = $this->server->validateAuthorizationRequest($psrRequest);
 
-        $scopes = $this->parseScopes($authRequest);
+            $scopes = $this->parseScopes($authRequest);
 
-        $token = $tokens->findValidToken(
-            $user = $request->user(),
-            $client = $clients->find($authRequest->getClient()->getIdentifier())
-        );
+            $token = $tokens->findValidToken(
+                $user = $request->user(),
+                $client = $clients->find($authRequest->getClient()->getIdentifier())
+            );
 
-        if ($token && $token->scopes === collect($scopes)->pluck('id')->all()) {
-            return $this->approveRequest($authRequest, $user);
-        }
+            if ($token && $token->scopes === collect($scopes)->pluck('id')->all()) {
+                return $this->approveRequest($authRequest, $user);
+            }
 
-        $request->session()->put('authRequest', $authRequest);
+            $request->session()->put('authRequest', $authRequest);
 
-        return $this->response->view('passport::authorize', [
-            'client' => $client,
-            'user' => $user,
-            'scopes' => $scopes,
-            'request' => $request,
-        ]);
+            return $this->response->view('passport::authorize', [
+                'client' => $client,
+                'user' => $user,
+                'scopes' => $scopes,
+                'request' => $request,
+            ]);
+        });
     }
 
     /**
