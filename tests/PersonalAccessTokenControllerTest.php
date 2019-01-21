@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Laravel\Passport\Passport;
 use PHPUnit\Framework\TestCase;
 use Laravel\Passport\TokenRepository;
-use Symfony\Component\HttpFoundation\Response;
 use Laravel\Passport\Http\Controllers\PersonalAccessTokenController;
 
 class PersonalAccessTokenControllerTest extends TestCase
@@ -105,9 +104,7 @@ class PersonalAccessTokenControllerTest extends TestCase
         $validator = m::mock('Illuminate\Contracts\Validation\Factory');
         $controller = new PersonalAccessTokenController($tokenRepository, $validator);
 
-        $response = $controller->destroy($request, 1);
-
-        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->status());
+        $controller->destroy($request, 1);
     }
 
     public function test_not_found_response_is_returned_if_user_doesnt_have_token()
