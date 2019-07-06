@@ -78,8 +78,6 @@ class PassportServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/passport.php', 'passport');
-
         $this->registerAuthorizationServer();
 
         $this->registerResourceServer();
@@ -251,9 +249,11 @@ class PassportServiceProvider extends ServiceProvider
      */
     protected function registerGuard()
     {
-        Auth::extend('passport', function ($app, $name, array $config) {
-            return tap($this->makeGuard($config), function ($guard) {
-                $this->app->refresh('request', $guard, 'setRequest');
+        Auth::resolved(function ($auth) {
+            $auth->extend('passport', function ($app, $name, array $config) {
+                return tap($this->makeGuard($config), function ($guard) {
+                    $this->app->refresh('request', $guard, 'setRequest');
+                });
             });
         });
     }
