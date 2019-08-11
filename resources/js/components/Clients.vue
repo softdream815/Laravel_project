@@ -125,22 +125,6 @@
                                     </span>
                                 </div>
                             </div>
-
-                            <!-- Confidential -->
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label">Confidential</label>
-
-                                <div class="col-md-9">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" v-model="createForm.confidential">
-                                        </label>
-                                    </div>
-                                    <span class="form-text text-muted">
-                                        Require the client to authenticate with a secret.
-                                    </span>
-                                </div>
-                            </div>
                         </form>
                     </div>
 
@@ -238,8 +222,7 @@
                 createForm: {
                     errors: [],
                     name: '',
-                    redirect: '',
-                    confidential: true
+                    redirect: ''
                 },
 
                 editForm: {
