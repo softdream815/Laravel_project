@@ -38,32 +38,25 @@ class BridgeClientRepositoryTest extends TestCase
         unset($this->clientModelRepository, $this->repository);
     }
 
-    public function test_can_get_client()
+    public function test_can_get_client_for_auth_code_grant()
     {
-        $client = $this->repository->getClientEntity(1);
+        $client = $this->repository->getClientEntity(1, 'authorization_code', 'secret', true);
 
         $this->assertInstanceOf(Client::class, $client);
-        $this->assertEquals('1', $client->getIdentifier());
-        $this->assertEquals('Client', $client->getName());
-        $this->assertEquals(['http://localhost'], $client->getRedirectUri());
-        $this->assertTrue($client->isConfidential());
+        $this->assertNull($this->repository->getClientEntity(1, 'authorization_code', 'wrong-secret', true));
+        $this->assertNull($this->repository->getClientEntity(1, 'client_credentials', 'wrong-secret', true));
     }
 
-    public function test_can_validate_client_for_auth_code_grant()
-    {
-        $this->assertTrue($this->repository->validateClient(1, 'secret', 'authorization_code'));
-        $this->assertFalse($this->repository->validateClient(1, 'wrong-secret', 'authorization_code'));
-        $this->assertFalse($this->repository->validateClient(1, 'wrong-secret', 'client_credentials'));
-    }
-
-    public function test_can_validate_client_for_client_credentials_grant()
+    public function test_can_get_client_for_client_credentials_grant()
     {
         $client = $this->clientModelRepository->findActive(1);
         $client->personal_access_client = true;
 
-        $this->assertTrue($this->repository->validateClient(1, 'secret', 'client_credentials'));
-        $this->assertFalse($this->repository->validateClient(1, 'wrong-secret', 'client_credentials'));
-        $this->assertFalse($this->repository->validateClient(1, 'secret', 'authorization_code'));
+        $this->assertInstanceOf(
+            Client::class,
+            $this->repository->getClientEntity(1, 'client_credentials', 'secret', true)
+        );
+        $this->assertNull($this->repository->getClientEntity(1, 'authorization_code', 'secret', true));
     }
 
     public function test_password_grant_is_permitted()
@@ -71,17 +64,17 @@ class BridgeClientRepositoryTest extends TestCase
         $client = $this->clientModelRepository->findActive(1);
         $client->password_client = true;
 
-        $this->assertTrue($this->repository->validateClient(1, 'secret', 'password'));
+        $this->assertInstanceOf(Client::class, $this->repository->getClientEntity(1, 'password', 'secret'));
     }
 
     public function test_password_grant_is_prevented()
     {
-        $this->assertFalse($this->repository->validateClient(1, 'secret', 'password'));
+        $this->assertNull($this->repository->getClientEntity(1, 'password', 'secret'));
     }
 
     public function test_authorization_code_grant_is_permitted()
     {
-        $this->assertTrue($this->repository->validateClient(1, 'secret', 'authorization_code'));
+        $this->assertInstanceOf(Client::class, $this->repository->getClientEntity(1, 'authorization_code', 'secret'));
     }
 
     public function test_authorization_code_grant_is_prevented()
@@ -89,7 +82,7 @@ class BridgeClientRepositoryTest extends TestCase
         $client = $this->clientModelRepository->findActive(1);
         $client->password_client = true;
 
-        $this->assertFalse($this->repository->validateClient(1, 'secret', 'authorization_code'));
+        $this->assertNull($this->repository->getClientEntity(1, 'authorization_code', 'secret'));
     }
 
     public function test_personal_access_grant_is_permitted()
@@ -97,17 +90,17 @@ class BridgeClientRepositoryTest extends TestCase
         $client = $this->clientModelRepository->findActive(1);
         $client->personal_access_client = true;
 
-        $this->assertTrue($this->repository->validateClient(1, 'secret', 'personal_access'));
+        $this->assertInstanceOf(Client::class, $this->repository->getClientEntity(1, 'personal_access', 'secret'));
     }
 
     public function test_personal_access_grant_is_prevented()
     {
-        $this->assertFalse($this->repository->validateClient(1, 'secret', 'personal_access'));
+        $this->assertNull($this->repository->getClientEntity(1, 'personal_access', 'secret'));
     }
 
     public function test_client_credentials_grant_is_permitted()
     {
-        $this->assertTrue($this->repository->validateClient(1, 'secret', 'client_credentials'));
+        $this->assertInstanceOf(Client::class, $this->repository->getClientEntity(1, 'client_credentials', 'secret'));
     }
 
     public function test_client_credentials_grant_is_prevented()
@@ -115,7 +108,7 @@ class BridgeClientRepositoryTest extends TestCase
         $client = $this->clientModelRepository->findActive(1);
         $client->secret = null;
 
-        $this->assertFalse($this->repository->validateClient(1, 'secret', 'client_credentials'));
+        $this->assertNull($this->repository->getClientEntity(1, 'client_credentials', 'secret'));
     }
 
     public function test_grant_types_allows_request()
@@ -123,7 +116,7 @@ class BridgeClientRepositoryTest extends TestCase
         $client = $this->clientModelRepository->findActive(1);
         $client->grant_types = ['client_credentials'];
 
-        $this->assertTrue($this->repository->validateClient(1, 'secret', 'client_credentials'));
+        $this->assertInstanceOf(Client::class, $this->repository->getClientEntity(1, 'client_credentials', 'secret'));
     }
 
     public function test_grant_types_disallows_request()
@@ -131,7 +124,7 @@ class BridgeClientRepositoryTest extends TestCase
         $client = $this->clientModelRepository->findActive(1);
         $client->grant_types = ['client_credentials'];
 
-        $this->assertFalse($this->repository->validateClient(1, 'secret', 'authorization_code'));
+        $this->assertNull($this->repository->getClientEntity(1, 'authorization_code', 'secret'));
     }
 }
 

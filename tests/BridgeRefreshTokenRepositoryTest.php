@@ -4,8 +4,10 @@ namespace Laravel\Passport\Tests;
 
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
-use Laravel\Passport\RefreshTokenRepository;
-use Laravel\Passport\Bridge\RefreshTokenRepository as BridgeRefreshTokenRepository;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Contracts\Events\Dispatcher;
+use Laravel\Passport\Bridge\RefreshTokenRepository;
 
 class BridgeRefreshTokenRepositoryTest extends TestCase
 {
@@ -38,16 +40,18 @@ class BridgeRefreshTokenRepositoryTest extends TestCase
         $this->assertFalse($repository->isRefreshTokenRevoked('tokenId'));
     }
 
-    private function repository($refreshToken): BridgeRefreshTokenRepository
+    private function repository($refreshToken): RefreshTokenRepository
     {
-        $refreshTokenRepository = m::mock(RefreshTokenRepository::class)->makePartial();
-        $refreshTokenRepository->shouldReceive('find')
-            ->with('tokenId')
-            ->andReturn($refreshToken);
+        $queryBuilder = m::mock(Builder::class);
+        $queryBuilder->shouldReceive('first')->andReturn($refreshToken);
+        $queryBuilder->shouldReceive('where')->andReturn($queryBuilder);
 
-        $events = m::mock('Illuminate\Contracts\Events\Dispatcher');
+        $connection = m::mock(Connection::class);
+        $connection->shouldReceive('table')->andReturn($queryBuilder);
 
-        return new BridgeRefreshTokenRepository($refreshTokenRepository, $events);
+        $events = m::mock(Dispatcher::class);
+
+        return new RefreshTokenRepository($connection, $events);
     }
 }
 

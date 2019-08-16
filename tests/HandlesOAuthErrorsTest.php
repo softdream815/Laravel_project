@@ -2,20 +2,24 @@
 
 namespace Laravel\Passport\Tests;
 
+use Error;
+use Exception;
 use Mockery as m;
 use RuntimeException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\TestCase;
-use Laravel\Passport\Exceptions\OAuthServerException;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Laravel\Passport\Http\Controllers\HandlesOAuthErrors;
-use League\OAuth2\Server\Exception\OAuthServerException as LeagueException;
 
 class HandlesOAuthErrorsTest extends TestCase
 {
     public function tearDown()
     {
         m::close();
+        Container::getInstance()->flush();
     }
 
     public function testShouldReturnCallbackResultIfNoErrorIsThrown()
@@ -32,43 +36,62 @@ class HandlesOAuthErrorsTest extends TestCase
 
     public function testShouldHandleOAuthServerException()
     {
+        Container::getInstance()->instance(ExceptionHandler::class, $handler = m::mock());
+        Container::getInstance()->instance(Repository::class, $config = m::mock());
+
         $controller = new HandlesOAuthErrorsStubController;
+        $exception = new OAuthServerException('Error', 1, 'fatal');
 
-        $exception = new LeagueException('Error', 1, 'fatal');
+        $handler->shouldReceive('report')->once()->with($exception);
 
-        $e = null;
-
-        try {
-            $controller->test(function () use ($exception) {
-                throw $exception;
-            });
-        } catch (OAuthServerException $e) {
-            $e = $e;
-        }
-
-        $this->assertInstanceOf(OAuthServerException::class, $e);
-        $this->assertEquals('Error', $e->getMessage());
-        $this->assertInstanceOf(LeagueException::class, $e->getPrevious());
-
-        $response = $e->render(new Request);
-
-        $this->assertJsonStringEqualsJsonString(
-            '{"error":"fatal","error_description":"Error","message":"Error"}',
-            $response->getContent()
-        );
-    }
-
-    public function testShouldIgnoreOtherExceptions()
-    {
-        $controller = new HandlesOAuthErrorsStubController;
-
-        $exception = new RuntimeException('Exception occurred', 1);
-
-        $this->expectException(RuntimeException::class);
-
-        $controller->test(function () use ($exception) {
+        $result = $controller->test(function () use ($exception) {
             throw $exception;
         });
+
+        $this->assertInstanceOf(Response::class, $result);
+        $this->assertJsonStringEqualsJsonString('{"error":"fatal","error_description":"Error","message":"Error"}', $result->content());
+    }
+
+    public function testShouldHandleOtherExceptions()
+    {
+        Container::getInstance()->instance(ExceptionHandler::class, $handler = m::mock());
+        Container::getInstance()->instance(Repository::class, $config = m::mock());
+
+        $controller = new HandlesOAuthErrorsStubController;
+        $exception = new RuntimeException('Exception occurred', 1);
+
+        $handler->shouldReceive('report')->once()->with($exception);
+
+        $config->shouldReceive('get')->once()->andReturn(true);
+
+        $result = $controller->test(function () use ($exception) {
+            throw $exception;
+        });
+
+        $this->assertInstanceOf(Response::class, $result);
+        $this->assertSame('Exception occurred', $result->content());
+    }
+
+    public function testShouldHandleThrowables()
+    {
+        Container::getInstance()->instance(ExceptionHandler::class, $handler = m::mock());
+        Container::getInstance()->instance(Repository::class, $config = m::mock());
+
+        $controller = new HandlesOAuthErrorsStubController;
+        $exception = new Error('Fatal Error', 1);
+
+        $handler->shouldReceive('report')
+            ->once()
+            ->with(m::type(Exception::class));
+
+        $config->shouldReceive('get')->once()->andReturn(true);
+
+        $result = $controller->test(function () use ($exception) {
+            throw $exception;
+        });
+
+        $this->assertInstanceOf(Response::class, $result);
+        $this->assertSame('Fatal Error', $result->content());
     }
 }
 
