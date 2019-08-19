@@ -4,14 +4,14 @@ namespace Laravel\Passport;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Token extends Model
+class RefreshToken extends Model
 {
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'oauth_access_tokens';
+    protected $table = 'oauth_refresh_tokens';
 
     /**
      * Indicates if the IDs are auto-incrementing.
@@ -33,7 +33,6 @@ class Token extends Model
      * @var array
      */
     protected $casts = [
-        'scopes' => 'array',
         'revoked' => 'bool',
     ];
 
@@ -54,48 +53,13 @@ class Token extends Model
     public $timestamps = false;
 
     /**
-     * Get the client that the token belongs to.
+     * Get the access token that the refresh token belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function client()
+    public function accessToken()
     {
-        return $this->belongsTo(Passport::clientModel());
-    }
-
-    /**
-     * Get the user that the token belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
-    {
-        $provider = config('auth.guards.api.provider');
-
-        return $this->belongsTo(config('auth.providers.'.$provider.'.model'));
-    }
-
-    /**
-     * Determine if the token has a given scope.
-     *
-     * @param  string  $scope
-     * @return bool
-     */
-    public function can($scope)
-    {
-        return in_array('*', $this->scopes) ||
-               array_key_exists($scope, array_flip($this->scopes));
-    }
-
-    /**
-     * Determine if the token is missing a given scope.
-     *
-     * @param  string  $scope
-     * @return bool
-     */
-    public function cant($scope)
-    {
-        return ! $this->can($scope);
+        return $this->belongsTo(Passport::tokenModel());
     }
 
     /**
