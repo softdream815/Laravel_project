@@ -2,23 +2,26 @@
 
 namespace Laravel\Passport\Tests;
 
+use Exception;
 use Mockery as m;
 use Lcobucci\JWT\Parser;
 use Zend\Diactoros\Response;
 use PHPUnit\Framework\TestCase;
+use Illuminate\Container\Container;
 use Laravel\Passport\TokenRepository;
 use Psr\Http\Message\ResponseInterface;
+use Illuminate\Contracts\Config\Repository;
 use Psr\Http\Message\ServerRequestInterface;
 use League\OAuth2\Server\AuthorizationServer;
-use Laravel\Passport\Exceptions\OAuthServerException;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
-use League\OAuth2\Server\Exception\OAuthServerException as LeagueException;
 
 class AccessTokenControllerTest extends TestCase
 {
     public function tearDown()
     {
         m::close();
+        Container::getInstance()->flush();
     }
 
     public function test_a_token_can_be_issued()
@@ -43,19 +46,24 @@ class AccessTokenControllerTest extends TestCase
 
     public function test_exceptions_are_handled()
     {
+        Container::getInstance()->instance(ExceptionHandler::class, $exceptions = m::mock());
+        Container::getInstance()->instance(Repository::class, $config = m::mock());
+        $exceptions->shouldReceive('report')->once();
+        $config->shouldReceive('get')->once()->andReturn(true);
+
+        $request = m::mock(ServerRequestInterface::class);
+        $response = m::type(ResponseInterface::class);
         $tokens = m::mock(TokenRepository::class);
         $jwt = m::mock(Parser::class);
 
         $server = m::mock(AuthorizationServer::class);
-        $server->shouldReceive('respondToAccessTokenRequest')->with(
-            m::type(ServerRequestInterface::class), m::type(ResponseInterface::class)
-        )->andThrow(LeagueException::invalidCredentials());
+        $server->shouldReceive('respondToAccessTokenRequest')
+            ->with($request, $response)
+            ->andThrow(new Exception('whoops'));
 
         $controller = new AccessTokenController($server, $tokens, $jwt);
 
-        $this->expectException(OAuthServerException::class);
-
-        $controller->issueToken(m::mock(ServerRequestInterface::class));
+        $this->assertEquals('whoops', $controller->issueToken($request)->getOriginalContent());
     }
 }
 
