@@ -73,12 +73,10 @@ class ClientController
         $this->validation->make($request->all(), [
             'name' => 'required|max:255',
             'redirect' => ['required', $this->redirectRule],
-            'confidential' => 'boolean',
         ])->validate();
 
         return $this->clients->create(
-            $request->user()->getKey(), $request->name, $request->redirect,
-            false, false, (bool) $request->input('confidential', true)
+            $request->user()->getKey(), $request->name, $request->redirect
         )->makeVisible('secret');
     }
 

@@ -7,6 +7,7 @@ use DateInterval;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Support\Facades\Route;
+use League\OAuth2\Server\ResourceServer;
 
 class Passport
 {
@@ -123,13 +124,6 @@ class Passport
      * @var string
      */
     public static $tokenModel = 'Laravel\Passport\Token';
-
-    /**
-     * The refresh token model class name.
-     *
-     * @var string
-     */
-    public static $refreshTokenModel = 'Laravel\Passport\RefreshToken';
 
     /**
      * Indicates if Passport migrations will be run.
@@ -413,6 +407,29 @@ class Passport
     }
 
     /**
+     * Set the current client for the application with the given scopes.
+     *
+     * @param  \Laravel\Passport\Client  $client
+     * @param  array  $scopes
+     * @return \Laravel\Passport\Client
+     */
+    public static function actingAsClient($client, $scopes = [])
+    {
+        $mock = Mockery::mock(ResourceServer::class);
+
+        $mock->shouldReceive('validateAuthenticatedRequest')
+            ->andReturnUsing(function ($request) use ($client, $scopes) {
+                return $request
+                    ->withAttribute('oauth_client_id', $client->id)
+                    ->withAttribute('oauth_scopes', $scopes);
+            });
+
+        app()->instance(ResourceServer::class, $mock);
+
+        return $client;
+    }
+
+    /**
      * Set the storage location of the encryption keys.
      *
      * @param  string  $path
@@ -560,37 +577,6 @@ class Passport
     public static function token()
     {
         return new static::$tokenModel;
-    }
-
-    /**
-     * Set the refresh token model class name.
-     *
-     * @param  string  $refreshTokenModel
-     * @return void
-     */
-    public static function useRefreshTokenModel($refreshTokenModel)
-    {
-        static::$refreshTokenModel = $refreshTokenModel;
-    }
-
-    /**
-     * Get the refresh token model class name.
-     *
-     * @return string
-     */
-    public static function refreshTokenModel()
-    {
-        return static::$refreshTokenModel;
-    }
-
-    /**
-     * Get a new refresh token model instance.
-     *
-     * @return \Laravel\Passport\RefreshToken
-     */
-    public static function refreshToken()
-    {
-        return new static::$refreshTokenModel;
     }
 
     /**
