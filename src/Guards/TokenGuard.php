@@ -16,11 +16,7 @@ use Laravel\Passport\TokenRepository;
 use Laravel\Passport\TransientToken;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
-use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
-use Zend\Diactoros\ResponseFactory;
-use Zend\Diactoros\ServerRequestFactory;
-use Zend\Diactoros\StreamFactory;
-use Zend\Diactoros\UploadedFileFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 
 class TokenGuard
 {
@@ -173,12 +169,7 @@ class TokenGuard
         // First, we will convert the Symfony request to a PSR-7 implementation which will
         // be compatible with the base OAuth2 library. The Symfony bridge can perform a
         // conversion for us to a Zend Diactoros implementation of the PSR-7 request.
-        $psr = (new PsrHttpFactory(
-            new ServerRequestFactory,
-            new StreamFactory,
-            new UploadedFileFactory,
-            new ResponseFactory
-        ))->createRequest($request);
+        $psr = (new DiactorosFactory)->createRequest($request);
 
         try {
             return $this->server->validateAuthenticatedRequest($psr);

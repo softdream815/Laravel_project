@@ -7,7 +7,6 @@ use Laravel\Passport\Client;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PersonalAccessClient;
-use Laravel\Passport\RefreshToken;
 use Laravel\Passport\Token;
 use PHPUnit\Framework\TestCase;
 
@@ -66,24 +65,6 @@ class PassportTest extends TestCase
         $this->assertInstanceOf(Token::class, $token);
         $this->assertInstanceOf(Passport::tokenModel(), $token);
     }
-
-    public function test_refresh_token_instance_can_be_created()
-    {
-        $refreshToken = Passport::refreshToken();
-
-        $this->assertInstanceOf(RefreshToken::class, $refreshToken);
-        $this->assertInstanceOf(Passport::refreshTokenModel(), $refreshToken);
-    }
-
-    public function test_refresh_token_model_can_be_changed()
-    {
-        Passport::useRefreshTokenModel(RefreshTokenStub::class);
-
-        $refreshToken = Passport::refreshToken();
-
-        $this->assertInstanceOf(RefreshTokenStub::class, $refreshToken);
-        $this->assertInstanceOf(Passport::refreshTokenModel(), $refreshToken);
-    }
 }
 
 class PersonalAccessClientStub
@@ -92,8 +73,4 @@ class PersonalAccessClientStub
     {
         return false;
     }
-}
-
-class RefreshTokenStub
-{
 }
