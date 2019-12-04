@@ -16,7 +16,7 @@ class CheckClientCredentialsForAnyScope extends CheckCredentials
      */
     protected function validateCredentials($token)
     {
-        if (! $token) {
+        if (! $token || $token->client->firstParty()) {
             throw new AuthenticationException;
         }
     }
