@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/passport/compare/v8.0.2...master)
+## [Unreleased](https://github.com/laravel/passport/compare/v8.0.2...8.x)
 
 
 ## [v8.0.2 (2019-11-26)](https://github.com/laravel/passport/compare/v8.0.1...v8.0.2)

@@ -34,7 +34,7 @@ class AuthorizedAccessTokenController
      */
     public function forUser(Request $request)
     {
-        $tokens = $this->tokenRepository->forUser($request->user()->getAuthIdentifier());
+        $tokens = $this->tokenRepository->forUser($request->user()->getKey());
 
         return $tokens->load('client')->filter(function ($token) {
             return ! $token->client->firstParty() && ! $token->revoked;
@@ -51,7 +51,7 @@ class AuthorizedAccessTokenController
     public function destroy(Request $request, $tokenId)
     {
         $token = $this->tokenRepository->findForUser(
-            $tokenId, $request->user()->getAuthIdentifier()
+            $tokenId, $request->user()->getKey()
         );
 
         if (is_null($token)) {
