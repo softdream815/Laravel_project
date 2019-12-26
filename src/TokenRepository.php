@@ -61,7 +61,7 @@ class TokenRepository
     public function getValidToken($user, $client)
     {
         return $client->tokens()
-                    ->whereUserId($user->getAuthIdentifier())
+                    ->whereUserId($user->getKey())
                     ->where('revoked', 0)
                     ->where('expires_at', '>', Carbon::now())
                     ->first();
@@ -93,7 +93,8 @@ class TokenRepository
      * Check if the access token has been revoked.
      *
      * @param  string  $id
-     * @return bool
+     *
+     * @return bool Return true if this token has been revoked
      */
     public function isAccessTokenRevoked($id)
     {
@@ -114,7 +115,7 @@ class TokenRepository
     public function findValidToken($user, $client)
     {
         return $client->tokens()
-                      ->whereUserId($user->getAuthIdentifier())
+                      ->whereUserId($user->getKey())
                       ->where('revoked', 0)
                       ->where('expires_at', '>', Carbon::now())
                       ->latest('expires_at')

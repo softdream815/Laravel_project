@@ -3,7 +3,6 @@
 namespace Laravel\Passport\Bridge;
 
 use Laravel\Passport\ClientRepository as ClientModelRepository;
-use Laravel\Passport\Passport;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface
@@ -42,9 +41,6 @@ class ClientRepository implements ClientRepositoryInterface
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateClient($clientIdentifier, $clientSecret, $grantType)
     {
         // First, we will verify that the client exists and is authorized to create personal
@@ -56,7 +52,7 @@ class ClientRepository implements ClientRepositoryInterface
             return false;
         }
 
-        return ! $record->confidential() || $this->verifySecret((string) $clientSecret, $record->secret);
+        return ! $record->confidential() || hash_equals($record->secret, (string) $clientSecret);
     }
 
     /**
@@ -84,19 +80,5 @@ class ClientRepository implements ClientRepositoryInterface
             default:
                 return true;
         }
-    }
-
-    /**
-     * @param  string  $clientSecret
-     * @param  string  $storedHash
-     * @return bool
-     */
-    protected function verifySecret($clientSecret, $storedHash)
-    {
-        if (Passport::$useHashedClientSecrets) {
-            return password_verify($clientSecret, $storedHash);
-        }
-
-        return hash_equals($storedHash, $clientSecret);
     }
 }

@@ -5,7 +5,6 @@ namespace Laravel\Passport\Tests;
 use Laravel\Passport\Bridge\Client;
 use Laravel\Passport\Bridge\ClientRepository as BridgeClientRepository;
 use Laravel\Passport\ClientRepository;
-use Laravel\Passport\Passport;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
@@ -14,17 +13,15 @@ class BridgeClientRepositoryTest extends TestCase
     /**
      * @var \Laravel\Passport\ClientRepository
      */
-    protected $clientModelRepository;
+    private $clientModelRepository;
 
     /**
      * @var \Laravel\Passport\Bridge\ClientRepository
      */
-    protected $repository;
+    private $repository;
 
     protected function setUp(): void
     {
-        Passport::$useHashedClientSecrets = false;
-
         $clientModelRepository = m::mock(ClientRepository::class);
         $clientModelRepository->shouldReceive('findActive')
             ->with(1)
