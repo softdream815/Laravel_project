@@ -119,7 +119,7 @@ class PersonalAccessTokenFactory
      * Get the access token instance for the parsed response.
      *
      * @param  array  $response
-     * @return \Laravel\Passport\Token
+     * @return Token
      */
     protected function findAccessToken(array $response)
     {

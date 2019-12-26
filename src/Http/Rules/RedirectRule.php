@@ -8,18 +8,10 @@ use Illuminate\Contracts\Validation\Rule;
 class RedirectRule implements Rule
 {
     /**
-     * The validator instance.
-     *
      * @var \Illuminate\Contracts\Validation\Factory
      */
-    protected $validator;
+    private $validator;
 
-    /**
-     * Create a new rule instance.
-     *
-     * @param  \Illuminate\Contracts\Validation\Factory  $validator
-     * @return void
-     */
     public function __construct(Factory $validator)
     {
         $this->validator = $validator;

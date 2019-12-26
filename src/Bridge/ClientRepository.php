@@ -41,9 +41,6 @@ class ClientRepository implements ClientRepositoryInterface
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateClient($clientIdentifier, $clientSecret, $grantType)
     {
         // First, we will verify that the client exists and is authorized to create personal
