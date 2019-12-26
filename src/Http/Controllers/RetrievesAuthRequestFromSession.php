@@ -13,6 +13,7 @@ trait RetrievesAuthRequestFromSession
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \League\OAuth2\Server\RequestTypes\AuthorizationRequest
+     *
      * @throws \Exception
      */
     protected function getAuthRequestFromSession(Request $request)
@@ -22,7 +23,7 @@ trait RetrievesAuthRequestFromSession
                 throw new Exception('Authorization request was not present in the session.');
             }
 
-            $authRequest->setUser(new User($request->user()->getKey()));
+            $authRequest->setUser(new User($request->user()->getAuthIdentifier()));
 
             $authRequest->setAuthorizationApproved(true);
         });

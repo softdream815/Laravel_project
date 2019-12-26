@@ -42,6 +42,13 @@ class Client extends Model
     ];
 
     /**
+     * The temporary non-hashed client secret.
+     *
+     * @var string|null
+     */
+    protected $plainSecret;
+
+    /**
      * Get the user that the client belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -71,6 +78,36 @@ class Client extends Model
     public function tokens()
     {
         return $this->hasMany(Passport::tokenModel(), 'client_id');
+    }
+
+    /**
+     * The temporary non-hashed client secret.
+     *
+     * If you're using hashed client secrets, this value will only be available
+     * once during the request the client was created. Afterwards, it cannot
+     * be retrieved or decrypted anymore.
+     *
+     * @return string|null
+     */
+    public function getPlainSecretAttribute()
+    {
+        return $this->plainSecret;
+    }
+
+    /**
+     * @param string|null $value
+     */
+    public function setSecretAttribute($value)
+    {
+        $this->plainSecret = $value;
+
+        if ($value === null || ! Passport::$useHashedClientSecrets) {
+            $this->attributes['secret'] = $value;
+
+            return;
+        }
+
+        $this->attributes['secret'] = hash('sha256', $value);
     }
 
     /**
