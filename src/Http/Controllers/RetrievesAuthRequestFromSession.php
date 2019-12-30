@@ -23,7 +23,7 @@ trait RetrievesAuthRequestFromSession
                 throw new Exception('Authorization request was not present in the session.');
             }
 
-            $authRequest->setUser(new User($request->user()->getAuthIdentifier()));
+            $authRequest->setUser(new User($request->user()->getKey()));
 
             $authRequest->setAuthorizationApproved(true);
         });

@@ -107,7 +107,7 @@ class AuthorizationController
      */
     protected function approveRequest($authRequest, $user)
     {
-        $authRequest->setUser(new User($user->getAuthIdentifier()));
+        $authRequest->setUser(new User($user->getKey()));
 
         $authRequest->setAuthorizationApproved(true);
 
