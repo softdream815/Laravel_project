@@ -34,7 +34,6 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
-        "orchestra/testbench": "^4.4|^5.0",
         "phpunit/phpunit": "^8.0"
     },
     "autoload": {
@@ -49,7 +48,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "8.x-dev"
+            "dev-master": "9.x-dev"
         },
         "laravel": {
             "providers": [

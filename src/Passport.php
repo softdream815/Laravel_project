@@ -8,7 +8,6 @@ use DateTimeInterface;
 use Illuminate\Support\Facades\Route;
 use League\OAuth2\Server\ResourceServer;
 use Mockery;
-use Psr\Http\Message\ServerRequestInterface;
 
 class Passport
 {
@@ -146,6 +145,11 @@ class Passport
      * @var bool
      */
     public static $unserializesCookies = false;
+
+    /**
+     * @var bool
+     */
+    public static $hashesClientSecrets = false;
 
     /**
      * Indicates the scope should inherit its parent scope.
@@ -430,7 +434,7 @@ class Passport
 
         $mock = Mockery::mock(ResourceServer::class);
         $mock->shouldReceive('validateAuthenticatedRequest')
-            ->andReturnUsing(function (ServerRequestInterface $request) use ($token) {
+            ->andReturnUsing(function ($request) use ($token) {
                 return $request->withAttribute('oauth_client_id', $token->client->id)
                     ->withAttribute('oauth_access_token_id', $token->id)
                     ->withAttribute('oauth_scopes', $token->scopes);
@@ -625,6 +629,18 @@ class Passport
     public static function refreshToken()
     {
         return new static::$refreshTokenModel;
+    }
+
+    /**
+     * Configure Passport to hash client credential secrets.
+     *
+     * @return static
+     */
+    public static function hashClientSecrets()
+    {
+        static::$hashesClientSecrets = true;
+
+        return new static;
     }
 
     /**
