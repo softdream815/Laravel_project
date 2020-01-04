@@ -19,8 +19,7 @@ class ClientCommand extends Command
             {--client : Create a client credentials grant client}
             {--name= : The name of the client}
             {--redirect_uri= : The URI to redirect to after authorization }
-            {--user_id= : The user ID the client should be assigned to }
-            {--public : Create a public client (Auth code grant type only) }';
+            {--user_id= : The user ID the client should be assigned to }';
 
     /**
      * The console command description.
@@ -136,7 +135,7 @@ class ClientCommand extends Command
         );
 
         $client = $clients->create(
-            $userId, $name, $redirect, false, false, ! $this->option('public')
+            $userId, $name, $redirect
         );
 
         $this->info('New client created successfully.');
