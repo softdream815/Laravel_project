@@ -10,7 +10,7 @@ use Laravel\Passport\Passport;
 use Laravel\Passport\TokenRepository;
 use League\OAuth2\Server\AuthorizationServer;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response as Psr7Response;
+use Laminas\Diactoros\Response as Psr7Response;
 
 class AuthorizationController
 {
@@ -107,7 +107,7 @@ class AuthorizationController
      */
     protected function approveRequest($authRequest, $user)
     {
-        $authRequest->setUser(new User($user->getAuthIdentifier()));
+        $authRequest->setUser(new User($user->getKey()));
 
         $authRequest->setAuthorizationApproved(true);
 

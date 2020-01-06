@@ -9,7 +9,7 @@ use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 
 class ApproveAuthorizationControllerTest extends TestCase
 {
@@ -51,7 +51,7 @@ class ApproveAuthorizationControllerFakeUser
 {
     public $id = 1;
 
-    public function getAuthIdentifier()
+    public function getKey()
     {
         return $this->id;
     }

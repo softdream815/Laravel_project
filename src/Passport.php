@@ -147,11 +147,6 @@ class Passport
     public static $unserializesCookies = false;
 
     /**
-     * @var bool
-     */
-    public static $hashesClientSecrets = false;
-
-    /**
      * Indicates the scope should inherit its parent scope.
      *
      * @var bool
@@ -629,18 +624,6 @@ class Passport
     public static function refreshToken()
     {
         return new static::$refreshTokenModel;
-    }
-
-    /**
-     * Configure Passport to hash client credential secrets.
-     *
-     * @return static
-     */
-    public static function hashClientSecrets()
-    {
-        static::$hashesClientSecrets = true;
-
-        return new static;
     }
 
     /**

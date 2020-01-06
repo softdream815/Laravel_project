@@ -61,7 +61,7 @@ class TokenRepository
     public function getValidToken($user, $client)
     {
         return $client->tokens()
-                    ->whereUserId($user->getAuthIdentifier())
+                    ->whereUserId($user->getKey())
                     ->where('revoked', 0)
                     ->where('expires_at', '>', Carbon::now())
                     ->first();
@@ -114,7 +114,7 @@ class TokenRepository
     public function findValidToken($user, $client)
     {
         return $client->tokens()
-                      ->whereUserId($user->getAuthIdentifier())
+                      ->whereUserId($user->getKey())
                       ->where('revoked', 0)
                       ->where('expires_at', '>', Carbon::now())
                       ->latest('expires_at')
