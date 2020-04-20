@@ -3,7 +3,6 @@
 namespace Laravel\Passport;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class Client extends Model
 {
@@ -49,10 +48,8 @@ class Client extends Model
      */
     public function user()
     {
-        $provider = $this->provider ?: config('auth.guards.api.provider');
-
         return $this->belongsTo(
-            config("auth.providers.$provider.model")
+            config('auth.providers.'.config('auth.guards.api.provider').'.model')
         );
     }
 
@@ -104,15 +101,5 @@ class Client extends Model
     public function confidential()
     {
         return ! empty($this->secret);
-    }
-
-    /**
-     * Get the client's provider.
-     *
-     * @return \Illuminate\Contracts\Auth\UserProvider|null
-     */
-    public function getProvider()
-    {
-        return $this->provider ? Auth::createUserProvider($this->provider) : null;
     }
 }
