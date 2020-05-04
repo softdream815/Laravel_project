@@ -101,7 +101,7 @@ abstract class CheckCredentials
     abstract protected function validateCredentials($token);
 
     /**
-     * Validate token scopes.
+     * Validate token credentials.
      *
      * @param  \Laravel\Passport\Token  $token
      * @param  array  $scopes

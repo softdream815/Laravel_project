@@ -3,6 +3,7 @@
 namespace Laravel\Passport;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Client extends Model
 {
@@ -42,16 +43,30 @@ class Client extends Model
     ];
 
     /**
+     * Bootstrap the model and its traits.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (config('passport.client_uuids')) {
+                $model->{$model->getKeyName()} = $model->{$model->getKeyName()} ?: (string) Str::orderedUuid();
+            }
+        });
+    }
+
+    /**
      * Get the user that the client belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
-        $provider = $this->provider ?: config('auth.guards.api.provider');
-
         return $this->belongsTo(
-            config("auth.providers.{$provider}.model")
+            config('auth.providers.'.config('auth.guards.api.provider').'.model')
         );
     }
 
@@ -103,5 +118,25 @@ class Client extends Model
     public function confidential()
     {
         return ! empty($this->secret);
+    }
+
+    /**
+     * Get the auto-incrementing key type.
+     *
+     * @return string
+     */
+    public function getKeyType()
+    {
+        return Passport::clientUuids() ? 'string' : $this->keyType;
+    }
+
+    /**
+     * Get the value indicating whether the IDs are incrementing.
+     *
+     * @return bool
+     */
+    public function getIncrementing()
+    {
+        return Passport::clientUuids() ? false : $this->incrementing;
     }
 }
