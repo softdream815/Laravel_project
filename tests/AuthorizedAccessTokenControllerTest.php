@@ -65,7 +65,7 @@ class AuthorizedAccessTokenControllerTest extends TestCase
 
         $request->setUserResolver(function () use ($token1, $token2) {
             $user = m::mock();
-            $user->shouldReceive('getKey')->andReturn(1);
+            $user->shouldReceive('getAuthIdentifier')->andReturn(1);
 
             return $user;
         });
@@ -89,7 +89,7 @@ class AuthorizedAccessTokenControllerTest extends TestCase
 
         $request->setUserResolver(function () {
             $user = m::mock();
-            $user->shouldReceive('getKey')->andReturn(1);
+            $user->shouldReceive('getAuthIdentifier')->andReturn(1);
 
             return $user;
         });
@@ -107,7 +107,7 @@ class AuthorizedAccessTokenControllerTest extends TestCase
 
         $request->setUserResolver(function () {
             $user = m::mock();
-            $user->shouldReceive('getKey')->andReturn(1);
+            $user->shouldReceive('getAuthIdentifier')->andReturn(1);
 
             return $user;
         });

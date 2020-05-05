@@ -114,7 +114,7 @@ class AuthorizationControllerTest extends TestCase
 
         $request = m::mock(Request::class);
         $request->shouldReceive('user')->once()->andReturn($user = m::mock());
-        $user->shouldReceive('getKey')->andReturn(1);
+        $user->shouldReceive('getAuthIdentifier')->andReturn(1);
         $request->shouldNotReceive('session');
 
         $authRequest->shouldReceive('getClient->getIdentifier')->once()->andReturn(1);
@@ -156,7 +156,7 @@ class AuthorizationControllerTest extends TestCase
 
         $request = m::mock(Request::class);
         $request->shouldReceive('user')->once()->andReturn($user = m::mock());
-        $user->shouldReceive('getKey')->andReturn(1);
+        $user->shouldReceive('getAuthIdentifier')->andReturn(1);
         $request->shouldNotReceive('session');
 
         $authRequest->shouldReceive('getClient->getIdentifier')->once()->andReturn(1);

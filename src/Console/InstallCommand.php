@@ -31,6 +31,8 @@ class InstallCommand extends Command
      */
     public function handle()
     {
+        $provider = in_array('users', array_keys(config('auth.providers'))) ? 'users' : null;
+
         $this->call('passport:keys', ['--force' => $this->option('force'), '--length' => $this->option('length')]);
 
         if ($this->option('uuids')) {
@@ -38,7 +40,7 @@ class InstallCommand extends Command
         }
 
         $this->call('passport:client', ['--personal' => true, '--name' => config('app.name').' Personal Access Client']);
-        $this->call('passport:client', ['--password' => true, '--name' => config('app.name').' Password Grant Client']);
+        $this->call('passport:client', ['--password' => true, '--name' => config('app.name').' Password Grant Client', '--provider' => $provider]);
     }
 
     /**

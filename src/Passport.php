@@ -20,20 +20,6 @@ class Passport
     public static $implicitGrantEnabled = false;
 
     /**
-     * Indicates if Passport should revoke existing tokens when issuing a new one.
-     *
-     * @var bool
-     */
-    public static $revokeOtherTokens = false;
-
-    /**
-     * Indicates if Passport should prune revoked tokens.
-     *
-     * @var bool
-     */
-    public static $pruneRevokedTokens = false;
-
-    /**
      * The personal access token client ID.
      *
      * @var int
@@ -155,6 +141,11 @@ class Passport
     public static $unserializesCookies = false;
 
     /**
+     * @var bool
+     */
+    public static $hashesClientSecrets = false;
+
+    /**
      * Indicates the scope should inherit its parent scope.
      *
      * @var bool
@@ -196,30 +187,6 @@ class Passport
         Route::group($options, function ($router) use ($callback) {
             $callback(new RouteRegistrar($router));
         });
-    }
-
-    /**
-     * Instruct Passport to revoke other tokens when a new one is issued.
-     *
-     * @deprecated since 1.0. Listen to Passport events on token creation instead.
-     *
-     * @return static
-     */
-    public static function revokeOtherTokens()
-    {
-        return new static;
-    }
-
-    /**
-     * Instruct Passport to keep revoked tokens pruned.
-     *
-     * @deprecated since 1.0. Listen to Passport events on token creation instead.
-     *
-     * @return static
-     */
-    public static function pruneRevokedTokens()
-    {
-        return new static;
     }
 
     /**
@@ -653,6 +620,18 @@ class Passport
     public static function refreshToken()
     {
         return new static::$refreshTokenModel;
+    }
+
+    /**
+     * Configure Passport to hash client credential secrets.
+     *
+     * @return static
+     */
+    public static function hashClientSecrets()
+    {
+        static::$hashesClientSecrets = true;
+
+        return new static;
     }
 
     /**
