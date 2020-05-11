@@ -18,8 +18,6 @@ Passport now has support for multiple guard user providers. Because of this chan
         $table->string('provider')->after('secret')->nullable();
     });
 
-If you have not previously published the Passport migrations, you should manually add the `provider` column to your database.
-
 ### Client Credentials Secret Hashing
 
 PR: https://github.com/laravel/passport/pull/1145
