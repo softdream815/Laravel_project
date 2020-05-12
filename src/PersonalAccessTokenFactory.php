@@ -93,12 +93,10 @@ class PersonalAccessTokenFactory
      */
     protected function createRequest($client, $userId, array $scopes)
     {
-        $secret = Passport::$hashesClientSecrets ? Passport::$personalAccessClientSecret : $client->secret;
-
         return (new ServerRequest)->withParsedBody([
             'grant_type' => 'personal_access',
             'client_id' => $client->id,
-            'client_secret' => $secret,
+            'client_secret' => $client->secret,
             'user_id' => $userId,
             'scope' => implode(' ', $scopes),
         ]);

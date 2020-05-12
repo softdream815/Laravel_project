@@ -179,14 +179,4 @@ class Client extends Model
     {
         return Passport::clientUuids() ? false : $this->incrementing;
     }
-
-    /**
-     * Get the current connection name for the model.
-     *
-     * @return string|null
-     */
-    public function getConnectionName()
-    {
-        return config('passport.storage.database.connection') ?? $this->connection;
-    }
 }

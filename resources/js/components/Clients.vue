@@ -224,35 +224,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Client Secret Modal -->
-        <div class="modal fade" id="modal-client-secret" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">
-                            Client Secret
-                        </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
-                        <p>
-                            Here is your new client secret. This is the only time it will be shown so don't lose it!
-                            You may now use this secret to make API requests.
-                        </p>
-
-                        <input type="text" class="form-control" v-model="clientSecret">
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -264,8 +235,6 @@
         data() {
             return {
                 clients: [],
-
-                clientSecret: null,
 
                 createForm: {
                     errors: [],
@@ -334,10 +303,8 @@
              */
             store() {
                 this.persistClient(
-                    'post',
-                    '/oauth/clients',
-                    this.createForm,
-                    '#modal-create-client'
+                    'post', '/oauth/clients',
+                    this.createForm, '#modal-create-client'
                 );
             },
 
@@ -357,10 +324,8 @@
              */
             update() {
                 this.persistClient(
-                    'put',
-                    '/oauth/clients/' + this.editForm.id,
-                    this.editForm,
-                    '#modal-edit-client'
+                    'put', '/oauth/clients/' + this.editForm.id,
+                    this.editForm, '#modal-edit-client'
                 );
             },
 
@@ -372,17 +337,13 @@
 
                 axios[method](uri, form)
                     .then(response => {
-                        this.getClients();
+                        this.clients.push(response.data);
 
                         form.name = '';
                         form.redirect = '';
                         form.errors = [];
 
                         $(modal).modal('hide');
-
-                        if (response.data.plainSecret) {
-                            this.showClientSecret(response.data.plainSecret);
-                        }
                     })
                     .catch(error => {
                         if (typeof error.response.data === 'object') {
@@ -391,15 +352,6 @@
                             form.errors = ['Something went wrong. Please try again.'];
                         }
                     });
-            },
-
-            /**
-             * Show the given client secret to the user.
-             */
-            showClientSecret(clientSecret) {
-                this.clientSecret = clientSecret;
-
-                $('#modal-client-secret').modal('show');
             },
 
             /**
