@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/passport/compare/v9.2.1...9.x)
+## [Unreleased](https://github.com/laravel/passport/compare/v9.2.1...master)
 
 
 ## [v9.2.1 (2020-05-14)](https://github.com/laravel/passport/compare/v9.2.0...v9.2.1)
