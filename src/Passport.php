@@ -20,6 +20,20 @@ class Passport
     public static $implicitGrantEnabled = false;
 
     /**
+     * The personal access token client ID.
+     *
+     * @var int|string
+     */
+    public static $personalAccessClientId;
+
+    /**
+     * The personal access token client secret.
+     *
+     * @var string
+     */
+    public static $personalAccessClientSecret;
+
+    /**
      * The default scope.
      *
      * @var string
@@ -180,6 +194,32 @@ class Passport
         Route::group($options, function ($router) use ($callback) {
             $callback(new RouteRegistrar($router));
         });
+    }
+
+    /**
+     * Set the client ID that should be used to issue personal access tokens.
+     *
+     * @param  int|string  $clientId
+     * @return static
+     */
+    public static function personalAccessClientId($clientId)
+    {
+        static::$personalAccessClientId = $clientId;
+
+        return new static;
+    }
+
+    /**
+     * Set the client secret that should be used to issue personal access tokens.
+     *
+     * @param  string  $clientSecret
+     * @return static
+     */
+    public static function personalAccessClientSecret($clientSecret)
+    {
+        static::$personalAccessClientSecret = $clientSecret;
+
+        return new static;
     }
 
     /**
@@ -369,11 +409,11 @@ class Passport
     }
 
     /**
-     * Set the current client for the application with the given scopes.
+     * Set the current client for the application with the given scopes.
      *
-     * @param  \Laravel\Passport\Client  $client
-     * @param  array  $scopes
-     * @return \Laravel\Passport\Client
+     * @param \Laravel\Passport\Client $client
+     * @param array $scopes
+     * @return \Laravel\Passport\Client
      */
     public static function actingAsClient($client, $scopes = [])
     {
