@@ -32,7 +32,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
             'expires_at' => $authCodeEntity->getExpiryDateTime(),
         ];
 
-        Passport::authCode()->forceFill($attributes)->save();
+        Passport::authCode()->setRawAttributes($attributes)->save();
     }
 
     /**

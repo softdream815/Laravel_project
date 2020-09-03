@@ -3,11 +3,11 @@
 namespace Laravel\Passport\Tests\Unit;
 
 use Illuminate\Http\Request;
+use Laminas\Diactoros\Response;
 use Laravel\Passport\Http\Controllers\ApproveAuthorizationController;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Mockery as m;
-use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -49,7 +49,7 @@ class ApproveAuthorizationControllerTest extends TestCase
             ->with($authRequest, m::type(ResponseInterface::class))
             ->andReturn($psrResponse);
 
-        $this->assertEquals('response', $controller->approve($request)->getContent());
+        $this->assertSame('response', $controller->approve($request)->getContent());
     }
 }
 

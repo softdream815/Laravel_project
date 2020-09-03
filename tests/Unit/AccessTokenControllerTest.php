@@ -2,6 +2,7 @@
 
 namespace Laravel\Passport\Tests\Unit;
 
+use Laminas\Diactoros\Response;
 use Laravel\Passport\Exceptions\OAuthServerException;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 use Laravel\Passport\TokenRepository;
@@ -9,7 +10,6 @@ use Lcobucci\JWT\Parser;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException as LeagueException;
 use Mockery as m;
-use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,7 +38,7 @@ class AccessTokenControllerTest extends TestCase
 
         $controller = new AccessTokenController($server, $tokens, $jwt);
 
-        $this->assertEquals('{"access_token":"access-token"}', $controller->issueToken($request)->getContent());
+        $this->assertSame('{"access_token":"access-token"}', $controller->issueToken($request)->getContent());
     }
 
     public function test_exceptions_are_handled()
