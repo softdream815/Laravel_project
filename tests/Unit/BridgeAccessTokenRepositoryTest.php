@@ -3,7 +3,6 @@
 namespace Laravel\Passport\Tests\Unit;
 
 use Carbon\CarbonImmutable;
-use DateTime;
 use Illuminate\Contracts\Events\Dispatcher;
 use Laravel\Passport\Bridge\AccessToken;
 use Laravel\Passport\Bridge\AccessTokenRepository;
@@ -33,8 +32,8 @@ class BridgeAccessTokenRepositoryTest extends TestCase
             $this->assertSame('client-id', $array['client_id']);
             $this->assertEquals(['scopes'], $array['scopes']);
             $this->assertEquals(false, $array['revoked']);
-            $this->assertInstanceOf(DateTime::class, $array['created_at']);
-            $this->assertInstanceOf(DateTime::class, $array['updated_at']);
+            $this->assertInstanceOf('DateTime', $array['created_at']);
+            $this->assertInstanceOf('DateTime', $array['updated_at']);
             $this->assertEquals($expiration, $array['expires_at']);
         });
 
