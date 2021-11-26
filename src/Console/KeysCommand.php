@@ -29,7 +29,7 @@ class KeysCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
     public function handle()
     {
@@ -40,8 +40,6 @@ class KeysCommand extends Command
 
         if ((file_exists($publicKey) || file_exists($privateKey)) && ! $this->option('force')) {
             $this->error('Encryption keys already exist. Use the --force option to overwrite them.');
-
-            return 1;
         } else {
             if (class_exists(LegacyRSA::class)) {
                 $keys = (new LegacyRSA)->createKey($this->input ? (int) $this->option('length') : 4096);
@@ -57,7 +55,5 @@ class KeysCommand extends Command
 
             $this->info('Encryption keys generated successfully.');
         }
-
-        return 0;
     }
 }

@@ -54,13 +54,6 @@ class Token extends Model
     ];
 
     /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
      * Get the client that the token belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -159,15 +152,5 @@ class Token extends Model
     public function transient()
     {
         return false;
-    }
-
-    /**
-     * Get the current connection name for the model.
-     *
-     * @return string|null
-     */
-    public function getConnectionName()
-    {
-        return config('passport.storage.database.connection') ?? $this->connection;
     }
 }

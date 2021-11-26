@@ -4,7 +4,6 @@ namespace Laravel\Passport\Tests\Feature;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
 use Orchestra\Testbench\TestCase;
 
@@ -12,7 +11,7 @@ abstract class PassportTestCase extends TestCase
 {
     use RefreshDatabase;
 
-    const KEYS = __DIR__.'/../keys';
+    const KEYS = __DIR__.'/keys';
     const PUBLIC_KEY = self::KEYS.'/oauth-public.key';
     const PRIVATE_KEY = self::KEYS.'/oauth-private.key';
 
@@ -21,10 +20,6 @@ abstract class PassportTestCase extends TestCase
         parent::setUp();
 
         $this->artisan('migrate:fresh');
-
-        Passport::routes();
-
-        Passport::loadKeysFrom(self::KEYS);
 
         @unlink(self::PUBLIC_KEY);
         @unlink(self::PRIVATE_KEY);
@@ -45,8 +40,6 @@ abstract class PassportTestCase extends TestCase
         $config->set('auth.guards.api', ['driver' => 'passport', 'provider' => 'users']);
 
         $app['config']->set('database.default', 'testbench');
-
-        $app['config']->set('passport.storage.database.connection', 'testbench');
 
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
