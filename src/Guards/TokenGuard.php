@@ -4,15 +4,12 @@ namespace Laravel\Passport\Guards;
 
 use Exception;
 use Firebase\JWT\JWT;
-use Illuminate\Auth\GuardHelpers;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Cookie\CookieValuePrefix;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Http\Request;
-use Illuminate\Support\Traits\Macroable;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PassportUserProvider;
@@ -23,10 +20,8 @@ use League\OAuth2\Server\ResourceServer;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
-class TokenGuard implements Guard
+class TokenGuard
 {
-    use GuardHelpers, Macroable;
-
     /**
      * The resource server instance.
      *
@@ -63,20 +58,6 @@ class TokenGuard implements Guard
     protected $encrypter;
 
     /**
-     * The request instance.
-     *
-     * @var \Illuminate\Http\Request
-     */
-    protected $request;
-
-    /**
-     * The currently authenticated client.
-     *
-     * @var \Laravel\Passport\Client|null
-     */
-    protected $client;
-
-    /**
      * Create a new token guard instance.
      *
      * @param  \League\OAuth2\Server\ResourceServer  $server
@@ -84,7 +65,6 @@ class TokenGuard implements Guard
      * @param  \Laravel\Passport\TokenRepository  $tokens
      * @param  \Laravel\Passport\ClientRepository  $clients
      * @param  \Illuminate\Contracts\Encryption\Encrypter  $encrypter
-     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     public function __construct(
@@ -92,75 +72,66 @@ class TokenGuard implements Guard
         PassportUserProvider $provider,
         TokenRepository $tokens,
         ClientRepository $clients,
-        Encrypter $encrypter,
-        Request $request
+        Encrypter $encrypter
     ) {
         $this->server = $server;
         $this->tokens = $tokens;
         $this->clients = $clients;
         $this->provider = $provider;
         $this->encrypter = $encrypter;
-        $this->request = $request;
+    }
+
+    /**
+     * Determine if the requested provider matches the client's provider.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function hasValidProvider(Request $request)
+    {
+        $client = $this->client($request);
+
+        if ($client && ! $client->provider) {
+            return true;
+        }
+
+        return $client && $client->provider === $this->provider->getProviderName();
     }
 
     /**
      * Get the user for the incoming request.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
-    public function user()
+    public function user(Request $request)
     {
-        if (! is_null($this->user)) {
-            return $this->user;
+        if ($request->bearerToken()) {
+            return $this->authenticateViaBearerToken($request);
+        } elseif ($request->cookie(Passport::cookie())) {
+            return $this->authenticateViaCookie($request);
         }
-
-        if ($this->request->bearerToken()) {
-            return $this->user = $this->authenticateViaBearerToken($this->request);
-        } elseif ($this->request->cookie(Passport::cookie())) {
-            return $this->user = $this->authenticateViaCookie($this->request);
-        }
-    }
-
-    /**
-     * Validate a user's credentials.
-     *
-     * @param  array  $credentials
-     * @return bool
-     */
-    public function validate(array $credentials = [])
-    {
-        return ! is_null((new static(
-            $this->server,
-            $this->provider,
-            $this->tokens,
-            $this->clients,
-            $this->encrypter,
-            $credentials['request'],
-        ))->user());
     }
 
     /**
      * Get the client for the incoming request.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
-    public function client()
+    public function client(Request $request)
     {
-        if (! is_null($this->client)) {
-            return $this->client;
-        }
-
-        if ($this->request->bearerToken()) {
-            if (! $psr = $this->getPsrRequestViaBearerToken($this->request)) {
+        if ($request->bearerToken()) {
+            if (! $psr = $this->getPsrRequestViaBearerToken($request)) {
                 return;
             }
 
-            return $this->client = $this->clients->findActive(
+            return $this->clients->findActive(
                 $psr->getAttribute('oauth_client_id')
             );
-        } elseif ($this->request->cookie(Passport::cookie())) {
-            if ($token = $this->getTokenViaCookie($this->request)) {
-                return $this->client = $this->clients->findActive($token['aud']);
+        } elseif ($request->cookie(Passport::cookie())) {
+            if ($token = $this->getTokenViaCookie($request)) {
+                return $this->clients->findActive($token['aud']);
             }
         }
     }
@@ -177,13 +148,7 @@ class TokenGuard implements Guard
             return;
         }
 
-        $client = $this->clients->findActive(
-            $psr->getAttribute('oauth_client_id')
-        );
-
-        if (! $client ||
-            ($client->provider &&
-             $client->provider !== $this->provider->getProviderName())) {
+        if (! $this->hasValidProvider($request)) {
             return;
         }
 
@@ -204,6 +169,15 @@ class TokenGuard implements Guard
         $token = $this->tokens->find(
             $psr->getAttribute('oauth_access_token_id')
         );
+
+        $clientId = $psr->getAttribute('oauth_client_id');
+
+        // Finally, we will verify if the client that issued this token is still valid and
+        // its tokens may still be used. If not, we will bail out since we don't want a
+        // user to be able to send access tokens for deleted or revoked applications.
+        if ($this->clients->revoked($clientId)) {
+            return;
+        }
 
         return $token ? $user->withAccessToken($token) : null;
     }
@@ -329,19 +303,6 @@ class TokenGuard implements Guard
         }
 
         return $token;
-    }
-
-    /**
-     * Set the current request instance.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return $this
-     */
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-
-        return $this;
     }
 
     /**
