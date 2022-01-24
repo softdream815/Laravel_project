@@ -22,8 +22,6 @@ abstract class PassportTestCase extends TestCase
 
         $this->artisan('migrate:fresh');
 
-        Passport::routes();
-
         Passport::loadKeysFrom(self::KEYS);
 
         @unlink(self::PUBLIC_KEY);
@@ -45,8 +43,6 @@ abstract class PassportTestCase extends TestCase
         $config->set('auth.guards.api', ['driver' => 'passport', 'provider' => 'users']);
 
         $app['config']->set('database.default', 'testbench');
-
-        $app['config']->set('passport.storage.database.connection', 'testbench');
 
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',

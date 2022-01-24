@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use DateInterval;
 use DateTimeInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Illuminate\Support\Facades\Route;
 use League\OAuth2\Server\ResourceServer;
 use Mockery;
 use Psr\Http\Message\ServerRequestInterface;
@@ -202,31 +201,6 @@ class Passport
     }
 
     /**
-     * Binds the Passport routes into the controller.
-     *
-     * @param  callable|null  $callback
-     * @param  array  $options
-     * @return void
-     */
-    public static function routes($callback = null, array $options = [])
-    {
-        $callback = $callback ?: function ($router) {
-            $router->all();
-        };
-
-        $defaultOptions = [
-            'prefix' => 'oauth',
-            'namespace' => '\Laravel\Passport\Http\Controllers',
-        ];
-
-        $options = array_merge($defaultOptions, $options);
-
-        Route::group($options, function ($router) use ($callback) {
-            $callback(new RouteRegistrar($router));
-        });
-    }
-
-    /**
      * Set the default scope(s). Multiple scopes may be an array or specified delimited by spaces.
      *
      * @param  array|string  $scope
@@ -414,9 +388,10 @@ class Passport
      *
      * @param  \Laravel\Passport\Client  $client
      * @param  array  $scopes
+     * @param  string  $guard
      * @return \Laravel\Passport\Client
      */
-    public static function actingAsClient($client, $scopes = [])
+    public static function actingAsClient($client, $scopes = [], $guard = 'api')
     {
         $token = app(self::tokenModel());
 
@@ -439,6 +414,10 @@ class Passport
         $mock->shouldReceive('find')->andReturn($token);
 
         app()->instance(TokenRepository::class, $mock);
+
+        app('auth')->guard($guard)->setClient($client);
+
+        app('auth')->shouldUse($guard);
 
         return $client;
     }
