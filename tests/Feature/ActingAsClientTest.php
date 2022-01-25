@@ -7,8 +7,9 @@ use Laravel\Passport\Client;
 use Laravel\Passport\Http\Middleware\CheckClientCredentials;
 use Laravel\Passport\Http\Middleware\CheckClientCredentialsForAnyScope;
 use Laravel\Passport\Passport;
+use Orchestra\Testbench\TestCase;
 
-class ActingAsClientTest extends PassportTestCase
+class ActingAsClientTest extends TestCase
 {
     public function testActingAsClientWhenTheRouteIsProtectedByCheckClientCredentialsMiddleware()
     {
@@ -44,12 +45,5 @@ class ActingAsClientTest extends PassportTestCase
         $response = $this->get('/foo');
         $response->assertSuccessful();
         $response->assertSee('bar');
-    }
-
-    public function testActingAsClientSetsTheClientOnTheGuard()
-    {
-        Passport::actingAsClient($client = new Client());
-
-        $this->assertSame($client, app('auth')->client());
     }
 }
